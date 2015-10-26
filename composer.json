@@ -1,0 +1,31 @@
+{
+    "name": "schnitzler/fluid-styled-responsive-images",
+    "type": "typo3-cms-extension",
+    "description": "Enables creation of responsive images for fluid styled content elements.",
+    "keywords": [
+        "TYPO3",
+        "fluid",
+        "responsive",
+        "images"
+    ],
+    "homepage": "https://github.com/alexanderschnitzler/fluid-styled-responsive-images",
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+            "name": "Alexander Schnitzler",
+            "email": "git@alexanderschnitzler.de"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0"
+    },
+    "replace": {
+        "fluid_styled_responsive_images": "self.version",
+        "typo3-ter/fluid-styled-responsive-images": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "Schnitzler\\FluidStyledResponsiveImages\\": "Classes/"
+        }
+    }
+}

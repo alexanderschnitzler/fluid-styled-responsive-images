@@ -1,0 +1,30 @@
+tt_content.textmedia.settings.responsive_image_rendering {
+    layoutKey = {$styles.content.imgtext.layoutKey}
+
+    # Default sourceCollection as an example
+    # Please write your own sourceCollection (highly recommended)
+    sourceCollection {
+        small {
+            width = 200
+
+            srcsetCandidate = 600w
+            mediaQuery = (max-device-width: 600px)
+            dataKey = small
+        }
+
+        smallRetina {
+            if {
+                value = {$styles.content.imgtext.layoutKey}
+                equals = default
+                negate = 1
+            }
+
+            width = 200
+            pixelDensity = 2
+
+            srcsetCandidate = 600w 2x
+            mediaQuery = (max-device-width: 600px) AND (min-resolution: 192dpi)
+            dataKey = smallRetina
+        }
+    }
+}
