@@ -159,9 +159,7 @@ class ImageRenderer implements FileRendererInterface
                     $this->tagBuilder->addAttribute('srcset', implode(', ', $srcset));
                 }
 
-                if (!empty($sizes)) {
-                    $this->tagBuilder->addAttribute('sizes', implode(', ', $sizes));
-                }
+                $this->tagBuilder->addAttribute('sizes', implode(', ', $sizes));
                 break;
             case 'data':
                 if (!empty($data)) {
