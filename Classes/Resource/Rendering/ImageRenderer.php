@@ -116,6 +116,14 @@ class ImageRenderer implements FileRendererInterface
                     throw new \RuntimeException();
                 }
 
+                if (isset($configuration['mediaQuery'])) {
+                    $sizes[] = trim($configuration['mediaQuery'], ' ,');
+                }
+
+                if ((int)$configuration['width'] > (int)$width) {
+                    throw new \RuntimeException();
+                }
+
                 $localProcessingConfiguration = $defaultProcessConfiguration;
                 $localProcessingConfiguration['width'] = $configuration['width'];
 
@@ -128,10 +136,6 @@ class ImageRenderer implements FileRendererInterface
 
                 $data['data-' . $configuration['dataKey']] = $url;
                 $srcset[] = $url . rtrim(' ' . $configuration['srcsetCandidate'] ?: '');
-
-                if (isset($configuration['mediaQuery'])) {
-                    $sizes[] = trim($configuration['mediaQuery'], ' ,');
-                }
             } catch (\Exception $ignoredException) {
                 continue;
             }
