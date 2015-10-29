@@ -105,7 +105,6 @@ class ImageRenderer implements FileRendererInterface
         try {
             $defaultProcessConfiguration = [];
             $defaultProcessConfiguration['width'] = (int)$width;
-            $defaultProcessConfiguration['height'] = (int)$height;
             $defaultProcessConfiguration['crop'] = $file->getProperty('crop');
         } catch (\InvalidArgumentException $e) {
             $defaultProcessConfiguration['crop'] = '';
