@@ -116,8 +116,8 @@ class ImageRenderer implements FileRendererInterface
                     throw new \RuntimeException();
                 }
 
-                if (isset($configuration['mediaQuery'])) {
-                    $sizes[] = trim($configuration['mediaQuery'], ' ,');
+                if (isset($configuration['sizes'])) {
+                    $sizes[] = trim($configuration['sizes'], ' ,');
                 }
 
                 if ((int)$configuration['width'] > (int)$width) {
