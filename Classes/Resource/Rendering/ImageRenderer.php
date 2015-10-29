@@ -105,7 +105,6 @@ class ImageRenderer implements FileRendererInterface
         try {
             $defaultProcessConfiguration = [];
             $defaultProcessConfiguration['width'] = (int)$width;
-            $defaultProcessConfiguration['height'] = (int)$height;
             $defaultProcessConfiguration['crop'] = $file->getProperty('crop');
         } catch (\InvalidArgumentException $e) {
             $defaultProcessConfiguration['crop'] = '';
@@ -114,6 +113,14 @@ class ImageRenderer implements FileRendererInterface
         foreach ($this->settings['sourceCollection'] as $configuration) {
             try {
                 if (!is_array($configuration)) {
+                    throw new \RuntimeException();
+                }
+
+                if (isset($configuration['sizes'])) {
+                    $sizes[] = trim($configuration['sizes'], ' ,');
+                }
+
+                if ((int)$configuration['width'] > (int)$width) {
                     throw new \RuntimeException();
                 }
 
@@ -128,11 +135,7 @@ class ImageRenderer implements FileRendererInterface
                 $url = $this->absRefPrefix . $processedFile->getPublicUrl();
 
                 $data['data-' . $configuration['dataKey']] = $url;
-                $srcset[] = $url . rtrim(' ' . $configuration['srcsetCandidate'] ?: '');
-
-                if (isset($configuration['mediaQuery'])) {
-                    $sizes[] = trim($configuration['mediaQuery'], ' ,');
-                }
+                $srcset[] = $url . rtrim(' ' . $configuration['srcset'] ?: '');
             } catch (\Exception $ignoredException) {
                 continue;
             }
@@ -156,9 +159,7 @@ class ImageRenderer implements FileRendererInterface
                     $this->tagBuilder->addAttribute('srcset', implode(', ', $srcset));
                 }
 
-                if (!empty($sizes)) {
-                    $this->tagBuilder->addAttribute('sizes', implode(', ', $sizes));
-                }
+                $this->tagBuilder->addAttribute('sizes', implode(', ', $sizes));
                 break;
             case 'data':
                 if (!empty($data)) {
