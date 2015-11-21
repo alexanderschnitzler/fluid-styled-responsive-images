@@ -149,8 +149,8 @@ class ImageRenderer implements FileRendererInterface
         $this->tagBuilder->reset();
         $this->tagBuilder->setTagName('img');
         $this->tagBuilder->addAttribute('src', $src);
-        $this->tagBuilder->addAttribute('alt', $originalFile->getProperty('alternative'));
-        $this->tagBuilder->addAttribute('title', $originalFile->getProperty('title'));
+        $this->tagBuilder->addAttribute('alt', $file->getProperty('alternative'));
+        $this->tagBuilder->addAttribute('title', $file->getProperty('title'));
 
 
         switch ($this->settings['layoutKey']) {
