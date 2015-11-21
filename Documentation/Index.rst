@@ -50,3 +50,4 @@ Changelog
 	:titlesonly:
 
 	Changelog/1.0.1/Index
+	Changelog/1.0.2/Index

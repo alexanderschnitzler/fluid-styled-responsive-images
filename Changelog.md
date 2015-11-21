@@ -1,3 +1,8 @@
+1.0.2 / 15-11-21
+==================
+
+  * 2015-11-21  4bcd1ca  [BUGFIX] Set alt and title from merged properties (Alexander Schnitzler)
+
 1.0.1 / 15-10-29
 ==================
 
