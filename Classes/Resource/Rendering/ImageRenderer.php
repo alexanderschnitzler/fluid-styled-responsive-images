@@ -46,11 +46,6 @@ class ImageRenderer implements FileRendererInterface
     protected $settings;
 
     /**
-     * @var string
-     */
-    protected $absRefPrefix;
-
-    /**
      * @return ImageRenderer
      */
     public function __construct()
@@ -132,7 +127,7 @@ class ImageRenderer implements FileRendererInterface
                     $localProcessingConfiguration
                 );
 
-                $url = $this->absRefPrefix . $processedFile->getPublicUrl();
+                $url = $this->getTypoScriptFrontendController()->absRefPrefix . $processedFile->getPublicUrl();
 
                 $data['data-' . $configuration['dataKey']] = $url;
                 $srcset[] = $url . rtrim(' ' . $configuration['srcset'] ?: '');
@@ -196,6 +191,13 @@ class ImageRenderer implements FileRendererInterface
     }
 
     /**
+     * @return TypoScriptFrontendController
+     */
+    protected function getTypoScriptFrontendController() {
+        return $GLOBALS['TSFE'];
+    }
+
+    /**
      * @return void
      */
     protected function getConfiguration()
@@ -217,7 +219,5 @@ class ImageRenderer implements FileRendererInterface
             (isset($settings['sourceCollection']) && is_array($settings['sourceCollection']))
                 ? $settings['sourceCollection']
                 : [];
-
-        $this->absRefPrefix = ObjectAccess::getPropertyPath($configuration, 'config.absRefPrefix') ?: '';
     }
 }
