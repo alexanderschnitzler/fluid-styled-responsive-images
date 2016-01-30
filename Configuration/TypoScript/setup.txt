@@ -1,5 +1,5 @@
 tt_content.textmedia.settings.responsive_image_rendering {
-    layoutKey = {$styles.content.imgtext.layoutKey}
+    layoutKey = srcset
 
     sourceCollection {
         # Please write your own sourceCollection configuration
