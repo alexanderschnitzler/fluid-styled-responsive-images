@@ -1,6 +1,7 @@
 <?php
 namespace Schnitzler\FluidStyledResponsiveImages\Resource\Rendering;
 
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
@@ -46,6 +47,31 @@ class ImageRenderer implements FileRendererInterface
     protected $settings;
 
     /**
+     * @var array
+     */
+    protected $sizes = [];
+
+    /**
+     * @var array
+     */
+    protected $srcset = [];
+
+    /**
+     * @var array
+     */
+    protected $data = [];
+
+    /**
+     * @var string
+     */
+    protected $defaultWidth;
+
+    /**
+     * @var string
+     */
+    protected $defaultHeight;
+
+    /**
      * @return ImageRenderer
      */
     public function __construct()
@@ -89,7 +115,8 @@ class ImageRenderer implements FileRendererInterface
         array $options = array(),
         $usedPathsRelativeToCurrentScript = false
     ) {
-        $data = $srcset = $sizes = [];
+        $this->defaultWidth = $width;
+        $this->defaultHeight = $height;
 
         if ($file instanceof FileReference) {
             $originalFile = $file->getOriginalFile();
@@ -105,6 +132,34 @@ class ImageRenderer implements FileRendererInterface
             $defaultProcessConfiguration['crop'] = '';
         }
 
+        $this->processSourceCollection($originalFile, $defaultProcessConfiguration);
+
+        $src = $originalFile->process(
+            ProcessedFile::CONTEXT_IMAGECROPSCALEMASK,
+            $defaultProcessConfiguration
+        )->getPublicUrl();
+
+        try {
+            $alt = $file->getProperty('alternative');
+        } catch (\InvalidArgumentException $e) {
+            $alt = '';
+        }
+
+        try {
+            $title = $file->getProperty('title');
+        } catch (\InvalidArgumentException $e) {
+            $title = '';
+        }
+
+        return $this->buildImageTag($src, $alt, $title);
+    }
+
+    /**
+     * @param File $originalFile
+     * @param array $defaultProcessConfiguration
+     */
+    protected function processSourceCollection(File $originalFile, array $defaultProcessConfiguration)
+    {
         foreach ($this->settings['sourceCollection'] as $configuration) {
             try {
                 if (!is_array($configuration)) {
@@ -112,10 +167,10 @@ class ImageRenderer implements FileRendererInterface
                 }
 
                 if (isset($configuration['sizes'])) {
-                    $sizes[] = trim($configuration['sizes'], ' ,');
+                    $this->sizes[] = trim($configuration['sizes'], ' ,');
                 }
 
-                if ((int)$configuration['width'] > (int)$width) {
+                if ((int)$configuration['width'] > (int)$this->defaultWidth) {
                     throw new \RuntimeException();
                 }
 
@@ -129,44 +184,47 @@ class ImageRenderer implements FileRendererInterface
 
                 $url = $this->getTypoScriptFrontendController()->absRefPrefix . $processedFile->getPublicUrl();
 
-                $data['data-' . $configuration['dataKey']] = $url;
-                $srcset[] = $url . rtrim(' ' . $configuration['srcset'] ?: '');
+                $this->data['data-' . $configuration['dataKey']] = $url;
+                $this->srcset[] = $url . rtrim(' ' . $configuration['srcset'] ?: '');
             } catch (\Exception $ignoredException) {
                 continue;
             }
         }
+    }
 
-        $src = $originalFile->process(
-            ProcessedFile::CONTEXT_IMAGECROPSCALEMASK,
-            $defaultProcessConfiguration
-        )->getPublicUrl();
-
+    /**
+     * @param string $src
+     * @param string $alt
+     * @param string $title
+     *
+     * @return string
+     */
+    protected function buildImageTag($src, $alt = '', $title = '') {
         $this->tagBuilder->reset();
         $this->tagBuilder->setTagName('img');
         $this->tagBuilder->addAttribute('src', $src);
-        $this->tagBuilder->addAttribute('alt', $file->getProperty('alternative'));
-        $this->tagBuilder->addAttribute('title', $file->getProperty('title'));
-
+        $this->tagBuilder->addAttribute('alt', $alt);
+        $this->tagBuilder->addAttribute('title', $title);
 
         switch ($this->settings['layoutKey']) {
             case 'srcset':
-                if (!empty($srcset)) {
-                    $this->tagBuilder->addAttribute('srcset', implode(', ', $srcset));
+                if (!empty($this->srcset)) {
+                    $this->tagBuilder->addAttribute('srcset', implode(', ', $this->srcset));
                 }
 
-                $this->tagBuilder->addAttribute('sizes', implode(', ', $sizes));
+                $this->tagBuilder->addAttribute('sizes', implode(', ', $this->sizes));
                 break;
             case 'data':
-                if (!empty($data)) {
-                    foreach ($data as $key => $value) {
+                if (!empty($this->data)) {
+                    foreach ($this->data as $key => $value) {
                         $this->tagBuilder->addAttribute($key, $value);
                     }
                 }
                 break;
             default:
                 $this->tagBuilder->addAttributes([
-                    'width' => (int)$width,
-                    'height' => (int)$height,
+                    'width' => (int)$this->defaultWidth,
+                    'height' => (int)$this->defaultHeight,
                 ]);
                 break;
         }
