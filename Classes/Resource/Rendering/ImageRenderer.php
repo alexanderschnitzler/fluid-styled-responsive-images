@@ -117,6 +117,8 @@ class ImageRenderer implements FileRendererInterface
         array $options = [],
         $usedPathsRelativeToCurrentScript = false
     ) {
+        $this->reset();
+
         $this->defaultWidth = $width;
         $this->defaultHeight = $height;
 
@@ -155,6 +157,16 @@ class ImageRenderer implements FileRendererInterface
         }
 
         return $this->buildImageTag($src, $alt, $title);
+    }
+
+    /**
+     * @return void
+     */
+    protected function reset()
+    {
+        $this->sizes = [];
+        $this->srcset = [];
+        $this->data = [];
     }
 
     /**
