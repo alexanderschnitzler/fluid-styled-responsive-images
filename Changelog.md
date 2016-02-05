@@ -1,3 +1,8 @@
+1.1.1 / 16-02-05
+==================
+
+  * 2016-02-05  731fb6d  [BUGFIX] Reset renderer before each image processing (Alexander Schnitzler)
+
 1.1.0 / 16-02-05
 ==================
 
