@@ -114,7 +114,7 @@ class ImageRenderer implements FileRendererInterface
         FileInterface $file,
         $width,
         $height,
-        array $options = array(),
+        array $options = [],
         $usedPathsRelativeToCurrentScript = false
     ) {
         $this->defaultWidth = $width;
