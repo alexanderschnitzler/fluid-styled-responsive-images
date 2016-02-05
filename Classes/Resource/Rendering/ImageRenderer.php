@@ -1,17 +1,13 @@
 <?php
 namespace Schnitzler\FluidStyledResponsiveImages\Resource\Rendering;
 
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface;
-use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
-use TYPO3\CMS\Extbase\Service\TypoScriptService;
 use TYPO3\CMS\Fluid\Core\ViewHelper\TagBuilder;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class ImageRenderer
@@ -21,14 +17,14 @@ class ImageRenderer implements FileRendererInterface
 {
 
     /**
-     * @var TypoScriptService
-     */
-    protected $typoScriptService;
-
-    /**
      * @var TagBuilder
      */
-    protected $tagBuilder;
+    static protected $tagBuilder;
+
+    /**
+     * @var ImageRendererConfiguration
+     */
+    static protected $configuration;
 
     /**
      * @var array
@@ -43,23 +39,50 @@ class ImageRenderer implements FileRendererInterface
     /**
      * @var array
      */
-    protected $settings;
+    protected $sizes = [];
+
+    /**
+     * @var array
+     */
+    protected $srcset = [];
+
+    /**
+     * @var array
+     */
+    protected $data = [];
 
     /**
      * @var string
      */
-    protected $absRefPrefix;
+    protected $defaultWidth;
 
     /**
-     * @return ImageRenderer
+     * @var string
      */
-    public function __construct()
-    {
-        $this->settings = [];
-        $this->typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
-        $this->tagBuilder = GeneralUtility::makeInstance(TagBuilder::class);
+    protected $defaultHeight;
 
-        $this->getConfiguration();
+    /**
+     * @return ImageRendererConfiguration
+     */
+    protected function getConfiguration()
+    {
+        if (!static::$configuration instanceof ImageRendererConfiguration) {
+            static::$configuration = GeneralUtility::makeInstance(ImageRendererConfiguration::class);
+        }
+
+        return static::$configuration;
+    }
+
+    /**
+     * @return TagBuilder
+     */
+    protected function getTagBuilder()
+    {
+        if (!static::$tagBuilder instanceof TagBuilder) {
+            static::$tagBuilder = GeneralUtility::makeInstance(TagBuilder::class);
+        }
+
+        return static::$tagBuilder;
     }
 
     /**
@@ -91,12 +114,14 @@ class ImageRenderer implements FileRendererInterface
         FileInterface $file,
         $width,
         $height,
-        array $options = array(),
+        array $options = [],
         $usedPathsRelativeToCurrentScript = false
     ) {
-        $data = $srcset = $sizes = [];
+        $this->defaultWidth = $width;
+        $this->defaultHeight = $height;
 
-        if ($file instanceof FileReference) {
+        if (is_callable([$file, 'getOriginalFile'])) {
+            /** @var FileReference $file */
             $originalFile = $file->getOriginalFile();
         } else {
             $originalFile = $file;
@@ -104,120 +129,116 @@ class ImageRenderer implements FileRendererInterface
 
         try {
             $defaultProcessConfiguration = [];
-            $defaultProcessConfiguration['width'] = (int)$width;
+            $defaultProcessConfiguration['width'] = '360m';
             $defaultProcessConfiguration['crop'] = $file->getProperty('crop');
         } catch (\InvalidArgumentException $e) {
             $defaultProcessConfiguration['crop'] = '';
         }
 
-        foreach ($this->settings['sourceCollection'] as $configuration) {
-            try {
-                if (!is_array($configuration)) {
-                    throw new \RuntimeException();
-                }
-
-                if (isset($configuration['sizes'])) {
-                    $sizes[] = trim($configuration['sizes'], ' ,');
-                }
-
-                if ((int)$configuration['width'] > (int)$width) {
-                    throw new \RuntimeException();
-                }
-
-                $localProcessingConfiguration = $defaultProcessConfiguration;
-                $localProcessingConfiguration['width'] = $configuration['width'];
-
-                $processedFile = $originalFile->process(
-                    ProcessedFile::CONTEXT_IMAGECROPSCALEMASK,
-                    $localProcessingConfiguration
-                );
-
-                $url = $this->absRefPrefix . $processedFile->getPublicUrl();
-
-                $data['data-' . $configuration['dataKey']] = $url;
-                $srcset[] = $url . rtrim(' ' . $configuration['srcset'] ?: '');
-            } catch (\Exception $ignoredException) {
-                continue;
-            }
-        }
+        $this->processSourceCollection($originalFile, $defaultProcessConfiguration);
 
         $src = $originalFile->process(
             ProcessedFile::CONTEXT_IMAGECROPSCALEMASK,
             $defaultProcessConfiguration
         )->getPublicUrl();
 
-        $this->tagBuilder->reset();
-        $this->tagBuilder->setTagName('img');
-        $this->tagBuilder->addAttribute('src', $src);
-        $this->tagBuilder->addAttribute('alt', $file->getProperty('alternative'));
-        $this->tagBuilder->addAttribute('title', $file->getProperty('title'));
+        try {
+            $alt = $file->getProperty('alternative');
+        } catch (\InvalidArgumentException $e) {
+            $alt = '';
+        }
 
+        try {
+            $title = $file->getProperty('title');
+        } catch (\InvalidArgumentException $e) {
+            $title = '';
+        }
 
-        switch ($this->settings['layoutKey']) {
-            case 'srcset':
-                if (!empty($srcset)) {
-                    $this->tagBuilder->addAttribute('srcset', implode(', ', $srcset));
+        return $this->buildImageTag($src, $alt, $title);
+    }
+
+    /**
+     * @param File $originalFile
+     * @param array $defaultProcessConfiguration
+     */
+    protected function processSourceCollection(File $originalFile, array $defaultProcessConfiguration)
+    {
+        $configuration = $this->getConfiguration();
+
+        foreach ($configuration->getSourceCollection() as $sourceCollection) {
+            try {
+                if (!is_array($sourceCollection)) {
+                    throw new \RuntimeException();
                 }
 
-                $this->tagBuilder->addAttribute('sizes', implode(', ', $sizes));
+                if (isset($sourceCollection['sizes'])) {
+                    $this->sizes[] = trim($sourceCollection['sizes'], ' ,');
+                }
+
+                if ((int)$sourceCollection['width'] > (int)$this->defaultWidth) {
+                    throw new \RuntimeException();
+                }
+
+                $localProcessingConfiguration = $defaultProcessConfiguration;
+                $localProcessingConfiguration['width'] = $sourceCollection['width'];
+
+                $processedFile = $originalFile->process(
+                    ProcessedFile::CONTEXT_IMAGECROPSCALEMASK,
+                    $localProcessingConfiguration
+                );
+
+                $url = $configuration->getAbsRefPrefix() . $processedFile->getPublicUrl();
+
+                $this->data['data-' . $sourceCollection['dataKey']] = $url;
+                $this->srcset[] = $url . rtrim(' ' . $sourceCollection['srcset'] ?: '');
+            } catch (\Exception $ignoredException) {
+                continue;
+            }
+        }
+    }
+
+    /**
+     * @param string $src
+     * @param string $alt
+     * @param string $title
+     *
+     * @return string
+     */
+    protected function buildImageTag($src, $alt = '', $title = '')
+    {
+        $tagBuilder = $this->getTagBuilder();
+        $configuration = $this->getConfiguration();
+
+        $tagBuilder->reset();
+        $tagBuilder->setTagName('img');
+        $tagBuilder->addAttribute('src', $src);
+        $tagBuilder->addAttribute('alt', $alt);
+        $tagBuilder->addAttribute('title', $title);
+
+        switch ($configuration->getLayoutKey()) {
+            case 'srcset':
+                if (!empty($this->srcset)) {
+                    $tagBuilder->addAttribute('srcset', implode(', ', $this->srcset));
+                }
+
+                $tagBuilder->addAttribute('sizes', implode(', ', $this->sizes));
                 break;
             case 'data':
-                if (!empty($data)) {
-                    foreach ($data as $key => $value) {
-                        $this->tagBuilder->addAttribute($key, $value);
+                if (!empty($this->data)) {
+                    foreach ($this->data as $key => $value) {
+                        $tagBuilder->addAttribute($key, $value);
                     }
                 }
                 break;
             default:
-                $this->tagBuilder->addAttributes([
-                    'width' => (int)$width,
-                    'height' => (int)$height,
+                $tagBuilder->addAttributes([
+                    'width' => (int)$this->defaultWidth,
+                    'height' => (int)$this->defaultHeight,
                 ]);
                 break;
         }
 
-        return $this->tagBuilder->render();
+        return $tagBuilder->render();
     }
 
-    /**
-     * @return ContentObjectRenderer
-     */
-    protected function getTypoScriptSetup()
-    {
-        if (!$GLOBALS['TSFE'] instanceof TypoScriptFrontendController) {
-            return [];
-        }
-
-        if (!$GLOBALS['TSFE']->tmpl instanceof TemplateService) {
-            return [];
-        }
-
-        return $GLOBALS['TSFE']->tmpl->setup;
-    }
-
-    /**
-     * @return void
-     */
-    protected function getConfiguration()
-    {
-        $configuration = $this->typoScriptService->convertTypoScriptArrayToPlainArray($this->getTypoScriptSetup());
-
-        $settings = ObjectAccess::getPropertyPath(
-            $configuration,
-            'tt_content.textmedia.settings.responsive_image_rendering'
-        );
-        $settings = is_array($settings) ? $settings : [];
-
-        $this->settings['layoutKey'] =
-            (isset($settings['layoutKey']))
-                ? $settings['layoutKey']
-                : 'default';
-
-        $this->settings['sourceCollection'] =
-            (isset($settings['sourceCollection']) && is_array($settings['sourceCollection']))
-                ? $settings['sourceCollection']
-                : [];
-
-        $this->absRefPrefix = ObjectAccess::getPropertyPath($configuration, 'config.absRefPrefix') ?: '';
-    }
 }
