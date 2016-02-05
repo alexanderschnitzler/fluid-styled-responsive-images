@@ -120,7 +120,8 @@ class ImageRenderer implements FileRendererInterface
         $this->defaultWidth = $width;
         $this->defaultHeight = $height;
 
-        if ($file instanceof FileReference) {
+        if (is_callable([$file, 'getOriginalFile'])) {
+            /** @var FileReference $file */
             $originalFile = $file->getOriginalFile();
         } else {
             $originalFile = $file;
