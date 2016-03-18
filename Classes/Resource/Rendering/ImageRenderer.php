@@ -156,7 +156,7 @@ class ImageRenderer implements FileRendererInterface
             $title = '';
         }
 
-        return $this->buildImageTag($src, $alt, $title);
+        return $this->buildImageTag($src, $alt, $title, $options);
     }
 
     /**
@@ -213,10 +213,11 @@ class ImageRenderer implements FileRendererInterface
      * @param string $src
      * @param string $alt
      * @param string $title
+     * @param array $options
      *
      * @return string
      */
-    protected function buildImageTag($src, $alt = '', $title = '')
+    protected function buildImageTag($src, $alt = '', $title = '', $options = [])
     {
         $tagBuilder = $this->getTagBuilder();
         $configuration = $this->getConfiguration();
@@ -226,6 +227,11 @@ class ImageRenderer implements FileRendererInterface
         $tagBuilder->addAttribute('src', $src);
         $tagBuilder->addAttribute('alt', $alt);
         $tagBuilder->addAttribute('title', $title);
+
+        // Set optional attributes
+        if (array_key_exists('class', $options) && $options['class'] !== '') {
+          $tagBuilder->addAttribute('class', $options['class']);
+        }
 
         switch ($configuration->getLayoutKey()) {
             case 'srcset':
