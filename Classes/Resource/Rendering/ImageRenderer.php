@@ -144,19 +144,7 @@ class ImageRenderer implements FileRendererInterface
             $defaultProcessConfiguration
         )->getPublicUrl();
 
-        try {
-            $alt = $file->getProperty('alternative');
-        } catch (\InvalidArgumentException $e) {
-            $alt = '';
-        }
-
-        try {
-            $title = $file->getProperty('title');
-        } catch (\InvalidArgumentException $e) {
-            $title = '';
-        }
-
-        return $this->buildImageTag($src, $alt, $title);
+        return $this->buildImageTag($src, $file, $options);
     }
 
     /**
@@ -211,18 +199,39 @@ class ImageRenderer implements FileRendererInterface
 
     /**
      * @param string $src
-     * @param string $alt
-     * @param string $title
+     * @param FileInterface $file
+     * @param array $options
      *
      * @return string
      */
-    protected function buildImageTag($src, $alt = '', $title = '')
+    protected function buildImageTag($src, FileInterface $file, array $options)
     {
         $tagBuilder = $this->getTagBuilder();
         $configuration = $this->getConfiguration();
 
         $tagBuilder->reset();
         $tagBuilder->setTagName('img');
+
+        try {
+            $alt = trim($file->getProperty('alternative'));
+
+            if (empty($alt)) {
+                throw new \LogicException;
+            }
+        } catch (\Exception $e) {
+            $alt = isset($options['alt']) && !empty($options['alt']) ? $options['alt'] : '';
+        }
+
+        try {
+            $title = trim($file->getProperty('title'));
+
+            if (empty($title)) {
+                throw new \LogicException;
+            }
+        } catch (\Exception $e) {
+            $title = isset($options['title']) && !empty($options['title']) ? $options['title'] : '';
+        }
+
         $tagBuilder->addAttribute('src', $src);
         $tagBuilder->addAttribute('alt', $alt);
         $tagBuilder->addAttribute('title', $title);
@@ -248,6 +257,22 @@ class ImageRenderer implements FileRendererInterface
                     'height' => (int)$this->defaultHeight,
                 ]);
                 break;
+        }
+
+        if (isset($options['data']) && is_array($options['data'])) {
+            foreach ($options['data'] as $dataAttributeKey => $dataAttributeValue) {
+                $tagBuilder->addAttribute('data-' . $dataAttributeKey, $dataAttributeValue);
+            }
+        }
+
+        foreach ($configuration->getGenericTagAttributes() as $attributeName) {
+            if (isset($options[$attributeName]) && $options[$attributeName] !== '') {
+                $tagBuilder->addAttribute($attributeName, $options[$attributeName]);
+            }
+        }
+
+        if (isset($options['additionalAttributes']) && is_array($options['additionalAttributes'])) {
+            $tagBuilder->addAttributes($options['additionalAttributes']);
         }
 
         return $tagBuilder->render();

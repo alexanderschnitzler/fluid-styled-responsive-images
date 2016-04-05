@@ -26,6 +26,20 @@ class ImageRendererConfiguration
     protected $settings;
 
     /**
+     * @var array
+     */
+    protected $genericTagAttributes = [
+        'class',
+        'dir',
+        'id',
+        'lang',
+        'style',
+        'accesskey',
+        'tabindex',
+        'onclick',
+    ];
+
+    /**
      * @return ImageRendererConfiguration
      */
     public function __construct()
@@ -96,6 +110,14 @@ class ImageRendererConfiguration
         }
 
         return $this->getTypoScriptFrontendController()->tmpl->setup;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGenericTagAttributes()
+    {
+        return $this->genericTagAttributes;
     }
 
     /**

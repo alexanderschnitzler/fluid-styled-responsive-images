@@ -78,6 +78,11 @@ class ImageRendererTest extends UnitTestCase
             ->method('getAbsRefPrefix')
             ->will($this->returnValue(''));
 
+        $this->imageRendererConfiguration
+            ->expects($this->any())
+            ->method('getGenericTagAttributes')
+            ->will($this->returnValue([]));
+
         $this->imageRenderer = $this->getMock(
             ImageRenderer::class,
             ['getConfiguration']
