@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2016-04-05T17:26:24Z" product-name="fluid_styled_responsive_images">
+        <header/>
+        <body>
+            <trans-unit id="extconf.enableSmallDefaultImage" xml:space="preserve">
+                <source>Enable small(360px width) default image? (Useful with polyfills)</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

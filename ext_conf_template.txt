@@ -1,0 +1,2 @@
+# cat=basic/enable; type=boolean; label=LLL:EXT:fluid_styled_responsive_images/Resources/Private/Language/locallang_be.xlf:extconf.enableSmallDefaultImage
+enableSmallDefaultImage = 1
