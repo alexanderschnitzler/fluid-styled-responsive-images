@@ -27,7 +27,7 @@ Fluid Styled Responsive Images
 		TYPO3, fluid, responsive, images
 
 	:Copyright:
-		2015
+		2015 - 2016
 
 	:Author:
 		Alexander Schnitzler
@@ -53,3 +53,4 @@ Changelog
 	Changelog/1.0.2/Index
 	Changelog/1.1.0/Index
 	Changelog/1.1.1/Index
+	Changelog/1.2.0/Index
