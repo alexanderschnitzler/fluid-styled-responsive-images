@@ -16,6 +16,11 @@ class ImageRendererConfiguration
 {
 
     /**
+     * @var array
+     */
+    protected $extensionConfiguration;
+
+    /**
      * @var TypoScriptService
      */
     protected $typoScriptService;
@@ -26,10 +31,44 @@ class ImageRendererConfiguration
     protected $settings;
 
     /**
+     * @var array
+     */
+    protected $genericTagAttributes = [
+        'class',
+        'dir',
+        'id',
+        'lang',
+        'style',
+        'accesskey',
+        'tabindex',
+        'onclick',
+    ];
+
+    /**
      * @return ImageRendererConfiguration
      */
     public function __construct()
     {
+        if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['fluid_styled_responsive_images'])) {
+            $extensionConfiguration = unserialize(
+                $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['fluid_styled_responsive_images']
+            );
+
+            if (!is_array($extensionConfiguration)) {
+                $extensionConfiguration = [
+                    'enableSmallDefaultImage' => true,
+                ];
+            }
+
+            $this->extensionConfiguration = filter_var_array(
+                $extensionConfiguration,
+                [
+                    'enableSmallDefaultImage' => FILTER_VALIDATE_BOOLEAN
+                ],
+                false
+            );
+        }
+
         $this->settings = [];
         $this->typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
         $this->tagBuilder = GeneralUtility::makeInstance(TagBuilder::class);
@@ -96,6 +135,22 @@ class ImageRendererConfiguration
         }
 
         return $this->getTypoScriptFrontendController()->tmpl->setup;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGenericTagAttributes()
+    {
+        return $this->genericTagAttributes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExtensionConfiguration()
+    {
+        return $this->extensionConfiguration;
     }
 
     /**
