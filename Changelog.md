@@ -1,3 +1,18 @@
+1.2.0 / 16-05-23
+==================
+
+  * 2016-05-23  37134d2  [TASK] Raise version number (Alexander Schnitzler)
+  * 2016-05-23  093650d  [TASK] Add documentation for version 1.2.0 (Alexander Schnitzler)
+  * 2016-04-08  8d739f1  [TASK] Enable CI builds for TYPO3 8.0.0 and dev-master (Alexander Schnitzler)
+  * 2016-04-05  b78adbe  [FEATURE] Make small default image optional (Alexander Schnitzler)
+  * 2016-04-05  958b865  [TASK] Enable Travis CI builds (Alexander Schnitzler)
+  * 2016-04-05  aeca6ec  [FEATURE] Respect attributes of MediaViewHelper (Alexander Schnitzler)
+
+1.1.1 / 16-02-05
+==================
+
+  * 2016-02-05  731fb6d  [BUGFIX] Reset renderer before each image processing (Alexander Schnitzler)
+
 1.1.0 / 16-02-05
 ==================
 
