@@ -240,8 +240,9 @@ class ImageRenderer implements FileRendererInterface
 
         switch ($configuration->getLayoutKey()) {
             case 'srcset':
+            case 'data-srcset':
                 if (!empty($this->srcset)) {
-                    $tagBuilder->addAttribute('srcset', implode(', ', $this->srcset));
+                    $tagBuilder->addAttribute($configuration->getLayoutKey(), implode(', ', $this->srcset));
                 }
 
                 $tagBuilder->addAttribute('sizes', implode(', ', $this->sizes));
