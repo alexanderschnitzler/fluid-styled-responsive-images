@@ -86,6 +86,11 @@ class ImageRendererConfiguration
                 ? $settings['layoutKey']
                 : 'default';
 
+        $this->settings['attributePrefix'] =
+            (isset($settings['attributePrefix']))
+                ? $settings['attributePrefix']
+                : '';
+
         $this->settings['sourceCollection'] =
             (isset($settings['sourceCollection']) && is_array($settings['sourceCollection']))
                 ? $settings['sourceCollection']
@@ -111,6 +116,14 @@ class ImageRendererConfiguration
     public function getLayoutKey()
     {
         return $this->settings['layoutKey'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getAttributePrefix()
+    {
+        return $this->settings['attributePrefix'];
     }
 
     /**
