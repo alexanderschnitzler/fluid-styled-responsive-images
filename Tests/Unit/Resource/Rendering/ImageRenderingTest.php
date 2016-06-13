@@ -101,7 +101,7 @@ class ImageRenderingTest extends UnitTestCase
     {
         $processedFile = $this->getMock(
             ProcessedFile::class,
-            ['getPublicUrl'],
+            ['getPublicUrl', 'getUid', 'getIdentifier'],
             [],
             '',
             false
@@ -116,7 +116,7 @@ class ImageRenderingTest extends UnitTestCase
 
         $processedFile = $this->getMock(
             ProcessedFile::class,
-            ['getPublicUrl'],
+            ['getPublicUrl', 'getUid', 'getIdentifier'],
             [],
             '',
             false
@@ -131,7 +131,7 @@ class ImageRenderingTest extends UnitTestCase
 
         $processedFile = $this->getMock(
             ProcessedFile::class,
-            ['getPublicUrl'],
+            ['getPublicUrl', 'getUid', 'getIdentifier'],
             [],
             '',
             false
