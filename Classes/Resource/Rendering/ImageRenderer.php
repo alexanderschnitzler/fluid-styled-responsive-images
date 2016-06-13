@@ -1,6 +1,8 @@
 <?php
 namespace Schnitzler\FluidStyledResponsiveImages\Resource\Rendering;
 
+use Psr\Log\LoggerInterface;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
@@ -60,6 +62,19 @@ class ImageRenderer implements FileRendererInterface
      * @var string
      */
     protected $defaultHeight;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @return ImageRenderer
+     */
+    public function __construct()
+    {
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger('fluid_styled_responsive_images');
+    }
 
     /**
      * @return ImageRendererConfiguration
@@ -167,10 +182,34 @@ class ImageRenderer implements FileRendererInterface
     {
         $configuration = $this->getConfiguration();
 
-        foreach ($configuration->getSourceCollection() as $sourceCollection) {
+        foreach ($configuration->getSourceCollection() as $identifier => $sourceCollection) {
             try {
                 if (!is_array($sourceCollection)) {
-                    throw new \RuntimeException();
+                    throw new \RuntimeException(
+                        sprintf('Source collection identifier \'%s\' needs to be an array.', $identifier),
+                        1465811424547
+                    );
+                }
+
+                if (count($sourceCollection) === 0) {
+                    throw new \RuntimeException(
+                        sprintf('Source collection identifier \'%s\' is empty.', $identifier),
+                        1465811851908
+                    );
+                }
+
+                if (!array_key_exists('width', $sourceCollection)) {
+                    throw new \RuntimeException(
+                        sprintf('Source collection definition \'%s\' misses a width definition.', $identifier),
+                        1465812077858
+                    );
+                }
+
+                if ((int)$sourceCollection['width'] <= 0) {
+                    throw new \RuntimeException(
+                        sprintf('Source collection definition \'%s\' has an invalid width defined.', $identifier),
+                        1465812161920
+                    );
                 }
 
                 if (isset($sourceCollection['sizes'])) {
@@ -178,7 +217,14 @@ class ImageRenderer implements FileRendererInterface
                 }
 
                 if ((int)$sourceCollection['width'] > (int)$this->defaultWidth) {
-                    throw new \RuntimeException();
+                    $this->logger->info(
+                        sprintf(
+                            'Desired width \'%d\' is greater than physical width \'%d\', therefore image processing will be skipped.',
+                            $sourceCollection['width'],
+                            $this->defaultWidth
+                        )
+                    );
+                    continue;
                 }
 
                 $localProcessingConfiguration = $defaultProcessConfiguration;
@@ -189,11 +235,30 @@ class ImageRenderer implements FileRendererInterface
                     $localProcessingConfiguration
                 );
 
+                $this->logger->info(
+                    sprintf(
+                        'Created %dpx wide processed image due to source collection definition "%s"',
+                        $localProcessingConfiguration['width'],
+                        $identifier
+                    ),
+                    [
+                        'uid' => $processedFile->getUid(),
+                        'identifier' => $processedFile->getIdentifier()
+                    ]
+                );
+
                 $url = $configuration->getAbsRefPrefix() . $processedFile->getPublicUrl();
 
                 $this->data['data-' . $sourceCollection['dataKey']] = $url;
                 $this->srcset[] = $url . rtrim(' ' . $sourceCollection['srcset'] ?: '');
-            } catch (\Exception $ignoredException) {
+            } catch (\Exception $e) {
+                $this->logger->error(
+                    $e->getMessage() . ' (' . $e->getCode() . ')',
+                    [
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine()
+                    ]
+                );
                 continue;
             }
         }
@@ -254,6 +319,10 @@ class ImageRenderer implements FileRendererInterface
                 }
                 break;
             default:
+                $this->logger->warning(
+                    'Using a fallback rendering for image tags as "layoutKey" is missing/invalid. This is not an error but most likely not desired behaviour!'
+                );
+
                 $tagBuilder->addAttributes([
                     'width' => (int)$this->defaultWidth,
                     'height' => (int)$this->defaultHeight,
