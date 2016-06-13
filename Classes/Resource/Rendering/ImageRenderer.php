@@ -21,12 +21,12 @@ class ImageRenderer implements FileRendererInterface
     /**
      * @var TagBuilder
      */
-    static protected $tagBuilder;
+    protected static $tagBuilder;
 
     /**
      * @var ImageRendererConfiguration
      */
-    static protected $configuration;
+    protected static $configuration;
 
     /**
      * @var array
@@ -348,5 +348,4 @@ class ImageRenderer implements FileRendererInterface
 
         return $tagBuilder->render();
     }
-
 }

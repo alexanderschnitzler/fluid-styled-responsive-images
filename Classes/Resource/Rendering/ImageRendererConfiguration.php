@@ -160,5 +160,4 @@ class ImageRendererConfiguration
     {
         return $GLOBALS['TSFE'];
     }
-
 }

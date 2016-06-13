@@ -10,7 +10,7 @@ use TYPO3\CMS\Core\Tests\UnitTestCase;
  * Class ImageRendererTest
  * @package Schnitzler\FluidStyledResponsiveImages\Resource\Rendering
  */
-class ImageRendererTest extends UnitTestCase
+class ImageRenderingTest extends UnitTestCase
 {
 
     /**
@@ -309,5 +309,4 @@ class ImageRendererTest extends UnitTestCase
             )
         );
     }
-
 }
