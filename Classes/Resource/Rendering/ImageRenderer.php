@@ -242,9 +242,11 @@ class ImageRenderer implements FileRendererInterface
             case 'srcset':
                 if (!empty($this->srcset)) {
                     $tagBuilder->addAttribute('srcset', implode(', ', $this->srcset));
+                    if(!empty($this->sizes)) {
+                        $tagBuilder->addAttribute('sizes', implode(', ', $this->sizes));
+                    }
                 }
 
-                $tagBuilder->addAttribute('sizes', implode(', ', $this->sizes));
                 break;
             case 'data':
                 if (!empty($this->data)) {
