@@ -173,8 +173,9 @@ class ImageRendererTest extends UnitTestCase
         );
 
         $this->assertEquals(
-            '<img src="image.jpg" alt="alt" title="title" sizes="" />',
-            $result
+            '<img src="image.jpg" alt="alt" title="title" />',
+            $result,
+            'sizes-attribute is omitted when no sizes are given'
         );
     }
 
