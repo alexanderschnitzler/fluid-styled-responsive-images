@@ -7,6 +7,15 @@ responsive images with fluid, where the assumption is made, that TYPO3 CMS
 doesn't provide a mechanism outof the box for *fluid templates* while one
 is able to do it with TypoScript.
 
+* [Installation](#installation)
+* [Configuration](#configuration)
+  + [Mode `srcset`](#mode--srcset-)
+    - [Configuration Example](#configuration-example)
+* [Usage](#usage)
+* [Inner workings](#inner-workings)
+* [Extending `fluid_styled_responsive_images`](#extending--fluid-styled-responsive-images-)
+* [License](#license)
+
 ## Installation
 
 a) install the stable version from the [TYPO3 CMS Extension Repository (TER)](https://typo3.org/extensions/repository/view/fluid_styled_responsive_images) through the extension manager
@@ -49,7 +58,7 @@ A `sourceCollection` entry is a TypoScript hash. It can contain the following in
 For more precise descriptions, please check out the [html `img` element specification
 on srcset](http://w3c.github.io/html/semantics-embedded-content.html#element-attrdef-img-srcset).
 
-### Configuration Example
+#### Configuration Example
 
 ```
 tt_content.textmedia {
