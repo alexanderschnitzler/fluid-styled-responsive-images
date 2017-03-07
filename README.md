@@ -53,6 +53,7 @@ A `sourceCollection` entry is a TypoScript hash. It can contain the following in
 |------------------|-------------------------------------------------------------------------------|----------------------------------|
 | width            | The target size of the generated image. Supports modifications like `m` & `c` | 1200c (crops the image to 1200px)|
 | srcset           | a string describing the condition under which the image is displayed          | `1200w` (1200px viewports)       |
+| dataKey          | a name for the generated data-attribute                                       | `desktop`                        |
 | sizes [optional] | a media query with custom styles to be applied                                | `(min-width: 1200px) 1170px`     |
 
 For more precise descriptions, please check out the [html `img` element specification
@@ -68,31 +69,37 @@ tt_content.textmedia {
 
             sourceCollection {
                 10 {
+                    dataKey = desktop
                     width = 1260m
                     srcset = 1260w
                 }
 
                 20 {
+                    dataKey = table
                     width = 960m
                     srcset = 960w
                 }
 
                 30 {
+                    dataKey = tablet-small
                     width = 720m
                     srcset = 720w
                 }
 
                 40 {
+                    dataKey = medium
                     width = 640m
                     srcset = 640w
                 }
 
                 50 {
+                    dataKey = medium-phone
                     width = 360m
                     srcset = 360w
                 }
 
                 60 {
+                    dataKey = small
                     width = 320m
                     srcset = 320w
                 }
