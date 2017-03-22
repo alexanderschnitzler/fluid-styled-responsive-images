@@ -14,6 +14,8 @@ matrix:
     - php: 7.0
       env: TYPO3_VERSION=8.6.*
     - php: 7.0
+      env: TYPO3_VERSION=8.x-dev
+    - php: 7.0
       env: TYPO3_VERSION=dev-master
   allow_failures:
     - env: TYPO3_VERSION=dev-master
@@ -39,12 +41,13 @@ before_script:
   # Restore composer.json
   - git checkout composer.json
   - export TYPO3_PATH_WEB=$PWD/.Build/Web
+  - if [ -d .Build/vendor/typo3/cms/components/testing_framework/Resources/Core/Build ]; then export TYPO3_BUILD_DIR=".Build/vendor/typo3/cms/components/testing_framework/Resources/Core/Build"; else export TYPO3_BUILD_DIR=".Build/vendor/typo3/cms/typo3/sysext/core/Build"; fi
 
 script:
   - >
     echo;
     echo "Running unit tests";
-    .Build/bin/phpunit --colors  -c .Build/vendor/typo3/cms/typo3/sysext/core/Build/UnitTests.xml Tests/Unit/
+    .Build/bin/phpunit --colors -c $TYPO3_BUILD_DIR/UnitTests.xml Tests/Unit/
   - >
     echo;
     echo "Running php lint";
