@@ -1,0 +1,6 @@
+/bin/
+/vendor/
+/web/
+/.env
+/functional-tests.sh
+/unit-tests.sh

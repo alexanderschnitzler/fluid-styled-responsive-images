@@ -1,0 +1,27 @@
+<phpunit
+    backupGlobals="false"
+    backupStaticAttributes="false"
+    bootstrap="./vendor/typo3/cms/typo3/sysext/core/Build/UnitTestsBootstrap.php"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertWarningsToExceptions="true"
+    forceCoversAnnotation="false"
+    processIsolation="false"
+    stopOnError="false"
+    stopOnFailure="false"
+    stopOnIncomplete="false"
+    stopOnSkipped="false"
+    verbose="false"
+>
+    <testsuites>
+        <testsuite name="Unit Test">
+            <directory>web/typo3conf/ext/fluid_styled_responsive_images/Tests/Unit/</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">web/typo3conf/ext/fluid_styled_responsive_images/Classes/</directory>
+        </whitelist>
+    </filter>
+</phpunit>

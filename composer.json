@@ -20,9 +20,6 @@
         "php": ">=5.5.0",
         "typo3/cms": "^7.6.13 || ^8.6"
     },
-    "require-dev": {
-        "phpunit/phpunit": "~4.8.0"
-    },
     "replace": {
         "fluid_styled_responsive_images": "self.version",
         "typo3-ter/fluid-styled-responsive-images": "self.version"
@@ -30,27 +27,6 @@
     "autoload": {
         "psr-4": {
             "Schnitzler\\FluidStyledResponsiveImages\\": "Classes/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/",
-            "TYPO3\\CMS\\Fluid\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/fluid/Tests/"
-        }
-    },
-    "config": {
-        "vendor-dir": ".Build/vendor",
-        "bin-dir": ".Build/bin",
-        "preferred-install": {
-            "typo3/cms": "source",
-            "typo3/cms-core": "source",
-            "*": "dist"
-        }
-    },
-    "extra": {
-        "typo3/cms": {
-            "cms-package-dir": "{$vendor-dir}/typo3/cms",
-            "web-dir": ".Build/Web"
         }
     }
 }
