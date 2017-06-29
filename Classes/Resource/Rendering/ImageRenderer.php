@@ -15,7 +15,6 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\TagBuilder;
  */
 class ImageRenderer implements FileRendererInterface
 {
-
     /**
      * @var TagBuilder
      */
@@ -250,7 +249,7 @@ class ImageRenderer implements FileRendererInterface
             case 'srcset':
                 if (!empty($this->srcset)) {
                     $tagBuilder->addAttribute('srcset', implode(', ', $this->srcset));
-                    if(!empty($this->sizes)) {
+                    if (!empty($this->sizes)) {
                         $tagBuilder->addAttribute('sizes', implode(', ', $this->sizes));
                     }
                 }
@@ -289,5 +288,4 @@ class ImageRenderer implements FileRendererInterface
 
         return $tagBuilder->render();
     }
-
 }

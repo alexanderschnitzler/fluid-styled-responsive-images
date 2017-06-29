@@ -14,7 +14,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class ImageRendererConfiguration
 {
-
     /**
      * @var array
      */
@@ -160,5 +159,4 @@ class ImageRendererConfiguration
     {
         return $GLOBALS['TSFE'];
     }
-
 }
