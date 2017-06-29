@@ -129,11 +129,14 @@ class ImageRenderer implements FileRendererInterface
             $originalFile = $file;
         }
 
+        $defaultProcessConfiguration = [];
+        if ($this->getConfiguration()->getExtensionConfiguration()['enableSmallDefaultImage']) {
+            $defaultProcessConfiguration['width'] = '360m';
+        } else {
+            $defaultProcessConfiguration['width'] = $this->defaultWidth . 'm';
+        }
+
         try {
-            $defaultProcessConfiguration = [];
-            if ($this->getConfiguration()->getExtensionConfiguration()['enableSmallDefaultImage']) {
-                $defaultProcessConfiguration['width'] = '360m';
-            }
             $defaultProcessConfiguration['crop'] = $file->getProperty('crop');
         } catch (\InvalidArgumentException $e) {
             $defaultProcessConfiguration['crop'] = '';
@@ -141,12 +144,15 @@ class ImageRenderer implements FileRendererInterface
 
         $this->processSourceCollection($originalFile, $defaultProcessConfiguration);
 
-        $src = $originalFile->process(
+        $processedFile = $originalFile->process(
             ProcessedFile::CONTEXT_IMAGECROPSCALEMASK,
             $defaultProcessConfiguration
-        )->getPublicUrl();
+        );
 
-        return $this->buildImageTag($src, $file, $options);
+        $width = $processedFile->getProperty('width');
+        $height = $processedFile->getProperty('height');
+
+        return $this->buildImageTag($processedFile->getPublicUrl(), $file, $width, $height, $options);
     }
 
     /**
@@ -202,11 +208,13 @@ class ImageRenderer implements FileRendererInterface
     /**
      * @param string $src
      * @param FileInterface $file
+     * @param int $width
+     * @param int $height
      * @param array $options
      *
      * @return string
      */
-    protected function buildImageTag($src, FileInterface $file, array $options)
+    protected function buildImageTag($src, FileInterface $file, $width, $height, array $options)
     {
         $tagBuilder = $this->getTagBuilder();
         $configuration = $this->getConfiguration();
@@ -257,8 +265,8 @@ class ImageRenderer implements FileRendererInterface
                 break;
             default:
                 $tagBuilder->addAttributes([
-                    'width' => (int)$this->defaultWidth,
-                    'height' => (int)$this->defaultHeight,
+                    'width' => (int)$width,
+                    'height' => (int)$height,
                 ]);
                 break;
         }

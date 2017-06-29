@@ -101,7 +101,7 @@ class ImageRendererTest extends UnitTestCase
     {
         $processedFile = $this->getMock(
             ProcessedFile::class,
-            ['getPublicUrl'],
+            ['getPublicUrl', 'getProperty'],
             [],
             '',
             false
@@ -111,6 +111,11 @@ class ImageRendererTest extends UnitTestCase
             ->expects($this->any())
             ->method('getPublicUrl')
             ->will($this->returnValue('image.jpg'));
+
+        $processedFile
+            ->expects($this->any())
+            ->method('getProperty')
+            ->will($this->returnValue(100));
 
         $this->processedFiles[0] = $processedFile;
 
