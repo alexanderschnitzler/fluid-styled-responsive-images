@@ -1,0 +1,15 @@
+engines:
+  phpcodesniffer:
+    enabled: true
+    config:
+      standard: "PSR2"
+  fixme:
+    enabled: true
+
+ratings:
+  paths:
+  - "**.php"
+
+exclude_paths:
+  - ".Build/"
+  - "Tests/"

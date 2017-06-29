@@ -21,6 +21,10 @@ matrix:
 sudo: false
 
 addons:
+  code_climate:
+    repo_token:
+      secure: kHpQ5koZ1E53TkaEmok/N0n7EyHBvdQu6hwLgEwmhPgKl4TylzHVqHwVfhodnQamwDy6V+5s/acBH8oPbQ3PkwUg7N3xpa19xE/ixkcWfF26O6ZxrJ+AbAOrF9QsG4Kor9KbTmKJQvn7RJ6PUTe59G0jxWildX175lcXPoqk7vh/iTgRk0SbFApyrBYcbnjh/sJNimsyYKa3t4qQE1KlgvH5OpNtY55i7pRPyb75ro1ZPh9GGzZxFvilZKZ9TEY/rjNhyifvAe48d6w9vQb8907diXmvsyMLljs/b4USNRIeCCH3gxyx2qWBjJDj9iUvCLhK5+Bl3eTrqAmovWHC14TcR0zUt8nKvApHprI2tqxwkC5J38gY208pmVgTnuIErF9mAQK1wYAleKW8JBcXM12FQTARJ/RivVq/zVAiNfKXRGFcCyaaxB294fhT4v1OiaqngO7b1jNviDlz9UjnpuYrL4g53fyVIFvcBp0JP8sOI/x5oUiB9bHQj0S28+wmxpIcyFk9aL5YXhvLs04Yju18pGGUjg7ruyTnULtUAun+iohwCDuLnPlzj0x7NcKK5LJBok4EakLPWY1xvHPF45Pu9FJEdXvwTIjsEJPvXku8kDpJJgtIGUmsTAs8/48FiTh/eSk6Nz8EcmKhgO5mRn9vfarSWfD2qBD4BkC+F6c=
+
   apt:
     packages:
       - parallel
@@ -36,6 +40,8 @@ before_install:
 
 before_script:
   - cd .Build
+  - mkdir -p build/logs/
+  - mkdir -p coverage/
   - composer require typo3/cms=$TYPO3_VERSION
   - export TYPO3_PATH_WEB=$TRAVIS_BUILD_DIR/.Build/web;
   - cd $TRAVIS_BUILD_DIR
@@ -48,7 +54,7 @@ script:
   - >
     echo;
     echo "Running unit tests";
-    .Build/bin/phpunit --colors --configuration .Build/UnitTests.xml;
+    php .Build/bin/phpunit --colors --coverage-php=.Build/coverage/unit.cov --configuration .Build/UnitTests.xml;
   - >
     echo;
     echo "Running functional tests";
@@ -60,4 +66,9 @@ script:
     export IM_PATH="/usr/bin/";
     export IM_PATH_LZW="/usr/bin/";
     export IM_VRSION_5="gm";
-    .Build/bin/phpunit --process-isolation --colors --configuration .Build/FunctionalTests.xml;
+    php .Build/bin/phpunit --process-isolation --colors --coverage-php=.Build/coverage/functional.cov --configuration .Build/FunctionalTests.xml;
+
+after_script:
+  - cd .Build
+  - php bin/phpcov merge coverage --clover build/logs/clover.xml
+  - php bin/test-reporter

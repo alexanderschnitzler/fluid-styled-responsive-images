@@ -1,4 +1,6 @@
 /bin/
+/build/
+/coverage/
 /vendor/
 /web/
 /.env
