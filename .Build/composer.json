@@ -5,9 +5,10 @@
         "GPL-2.0+"
     ],
     "require-dev": {
-        "php": "^5.5 || ^7.0",
-        "phpunit/phpunit": "^4.8",
-        "phpunit/phpcov": "^2.0"
+        "php": "~7.0 || ~7.1",
+        "typo3/testing-framework": "^1.1.0",
+        "phpunit/phpcov": "^4.0.0",
+        "codeclimate/php-test-reporter": "^0.4.4"
     },
     "autoload": {
         "psr-4": {
@@ -17,11 +18,7 @@
     "autoload-dev": {
         "psr-4": {
             "Schnitzler\\FluidStyledResponsiveImages\\Tests\\": "web/typo3conf/ext/fluid_styled_responsive_images/Tests/"
-        },
-        "classmap": [
-            "vendor/typo3/cms/typo3/sysext/core/Classes/Tests/",
-            "vendor/typo3/cms/typo3/sysext/core/Tests/"
-        ]
+        }
     },
     "replace": {
         "fluid_styled_responsive_images": "self.version",
@@ -31,7 +28,6 @@
         "vendor-dir": "vendor",
         "bin-dir": "bin",
         "preferred-install": {
-            "typo3/cms": "source",
             "*": "dist"
         }
     },
@@ -46,8 +42,5 @@
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "web-dir": "web"
         }
-    },
-    "require": {
-        "codeclimate/php-test-reporter": "^0.4.4"
     }
 }

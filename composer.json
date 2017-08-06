@@ -17,8 +17,8 @@
         }
     ],
     "require": {
-        "php": "^5.5 || ^7.0",
-        "typo3/cms": "^7.6.13"
+        "php": "~7.0 || ~7.1",
+        "typo3/cms": "^8.7.0"
     },
     "replace": {
         "fluid_styled_responsive_images": "self.version",

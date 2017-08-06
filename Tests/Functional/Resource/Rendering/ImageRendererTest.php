@@ -2,18 +2,18 @@
 
 namespace Schnitzler\FluidStyledResponsiveImages\Tests\Functional\Resource\Rendering;
 
-use Dotenv\Dotenv;
 use Schnitzler\FluidStyledResponsiveImages\Resource\Rendering\ImageRenderer;
 use Schnitzler\FluidStyledResponsiveImages\Resource\Rendering\ImageRendererConfiguration;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\Tests\FunctionalTestCase;
 use TYPO3\CMS\Core\TimeTracker\NullTimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
  * Class Schnitzler\FluidStyledResponsiveImages\Tests\Functional\Resource\Rendering\ImageRendererTest
@@ -39,17 +39,19 @@ class ImageRendererTest extends FunctionalTestCase
      */
     public function setUp()
     {
-        $this->configurationToUseInTestInstance['GFX']['im'] = getenv('IM') ?: true;
-        $this->configurationToUseInTestInstance['GFX']['im_path'] = getenv('IM_PATH') ?: '/usr/local/';
-        $this->configurationToUseInTestInstance['GFX']['im_path_lzw'] = getenv('IM_PATH_LZW') ?: '/usr/local/';
-        $this->configurationToUseInTestInstance['GFX']['im_version_5'] = getenv('IM_VERSION_5') ?: 'im6';
+        $this->configurationToUseInTestInstance['GFX']['processor'] = getenv('PROCESSOR') ?: 'ImageMagick';
+        $this->configurationToUseInTestInstance['GFX']['processor_path'] = getenv('PROCESSOR_PATH') ?: '/usr/local/';
+        $this->configurationToUseInTestInstance['GFX']['processor_path_lzw'] = getenv('PROCESSOR_PATH_LZW') ?: '/usr/local/';
 
         parent::setUp();
         parent::setUpBackendUserFromFixture(1);
 
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+
         $fixtureRootPath = ORIGINAL_ROOT . 'typo3conf/ext/fluid_styled_responsive_images/.Build/fixtures/';
         foreach (['pages'] as $table) {
-            $this->getDatabaseConnection()->exec_TRUNCATEquery($table);
+            $connectionPool->getConnectionForTable($table)->truncate($table);
             $this->importDataSet($fixtureRootPath . $table . '.xml');
         }
 
