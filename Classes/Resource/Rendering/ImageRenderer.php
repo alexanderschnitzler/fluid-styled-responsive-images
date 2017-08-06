@@ -1,6 +1,7 @@
 <?php
 namespace Schnitzler\FluidStyledResponsiveImages\Resource\Rendering;
 
+use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
@@ -135,10 +136,14 @@ class ImageRenderer implements FileRendererInterface
             $defaultProcessConfiguration['width'] = $this->defaultWidth . 'm';
         }
 
+
         try {
-            $defaultProcessConfiguration['crop'] = $file->getProperty('crop');
+            $cropVariantCollection = CropVariantCollection::create((string)$file->getProperty('crop'));
+            $cropArea = $cropVariantCollection->getCropArea('default');
+            $crop = $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($file);
+            $defaultProcessConfiguration['crop'] = $crop;
         } catch (\InvalidArgumentException $e) {
-            $defaultProcessConfiguration['crop'] = '';
+            $defaultProcessConfiguration['crop'] = null;
         }
 
         $this->processSourceCollection($originalFile, $defaultProcessConfiguration);
