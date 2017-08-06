@@ -1,3 +1,22 @@
+7.6.0 / 17-08-06
+==================
+
+  * 2017-08-06  bec222d  [TASK] Set version to 7.6.0 (Alexander Schnitzler)
+  * 2017-08-06  6e2df51  [TASK] Add .gitattributes (Alexander Schnitzler)
+  * 2017-08-06  e034f46  [TASK] Prepare master to become TYPO3 7 LTS branch (Alexander Schnitzler)
+  * 2017-06-29  824c04b  [TASK] Make code PSR-2 compatible (Alexander Schnitzler)
+  * 2017-06-29  34b23d5  [BUGFIX] Set width and height correctly (Alexander Schnitzler)
+  * 2017-06-29  859b8a6  [TASK] Implement code climate analysis (Alexander Schnitzler)
+  * 2017-06-29  623303e  [TASK] Implement functional tests (Alexander Schnitzler)
+  * 2017-03-22  6e51673  TYPO3 8 compatibility (#27) (Cedric Ziel)
+  * 2017-03-07  e9933e3  [TASK] Mention dataKey in README (Cedric Ziel)
+  * 2017-03-07  8bca7ad  [TASK] Run travis tests with current TYPO3 CMS 8.6 (Cedric Ziel)
+  * 2016-11-08  662623c  [TASK] Add a table of contents to the README (Cedric Ziel)
+  * 2016-11-08  30f7b2a  [TASK] Ignore composer lock and exclude vendor files (Cedric Ziel)
+  * 2016-11-08  5338244  [TASK] Provide documentation through a small README (Cedric Ziel)
+  * 2016-11-06  4c7664c  [TASK] Adjust test to w3c compliance (Cedric Ziel)
+  * 2016-11-06  13b3cc6  [TASK] Avoid sizes attribute if no srcset attribute set. (Claus Fassing)
+
 1.2.0 / 16-05-23
 ==================
 
