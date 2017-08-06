@@ -3,8 +3,8 @@ namespace Schnitzler\FluidStyledResponsiveImages\Resource\Rendering;
 
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
-use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use TYPO3\TestingFramework\Core\AccessibleObjectInterface;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class ImageRendererTest
@@ -65,13 +65,9 @@ class ImageRendererTest extends UnitTestCase
                 }
             }));
 
-        $this->imageRendererConfiguration = $this->getMock(
-            ImageRendererConfiguration::class,
-            [],
-            [],
-            '',
-            false
-        );
+        $this->imageRendererConfiguration = $this->getMockBuilder(ImageRendererConfiguration::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->imageRendererConfiguration
             ->expects($this->any())
@@ -83,10 +79,9 @@ class ImageRendererTest extends UnitTestCase
             ->method('getGenericTagAttributes')
             ->will($this->returnValue([]));
 
-        $this->imageRenderer = $this->getMock(
-            ImageRenderer::class,
-            ['getConfiguration']
-        );
+        $this->imageRenderer = $this->getMockBuilder(ImageRenderer::class)
+            ->setMethods(['getConfiguration'])
+            ->getMock();
 
         $this->imageRenderer
             ->expects($this->any())
@@ -99,13 +94,10 @@ class ImageRendererTest extends UnitTestCase
      */
     public function setUpProcessedFiles()
     {
-        $processedFile = $this->getMock(
-            ProcessedFile::class,
-            ['getPublicUrl', 'getProperty'],
-            [],
-            '',
-            false
-        );
+        $processedFile = $this->getMockBuilder(ProcessedFile::class)
+            ->setMethods(['getPublicUrl', 'getProperty'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $processedFile
             ->expects($this->any())
@@ -119,13 +111,10 @@ class ImageRendererTest extends UnitTestCase
 
         $this->processedFiles[0] = $processedFile;
 
-        $processedFile = $this->getMock(
-            ProcessedFile::class,
-            ['getPublicUrl'],
-            [],
-            '',
-            false
-        );
+        $processedFile = $this->getMockBuilder(ProcessedFile::class)
+            ->setMethods(['getPublicUrl'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $processedFile
             ->expects($this->any())
@@ -134,13 +123,10 @@ class ImageRendererTest extends UnitTestCase
 
         $this->processedFiles[1] = $processedFile;
 
-        $processedFile = $this->getMock(
-            ProcessedFile::class,
-            ['getPublicUrl'],
-            [],
-            '',
-            false
-        );
+        $processedFile = $this->getMockBuilder(ProcessedFile::class)
+            ->setMethods(['getPublicUrl'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $processedFile
             ->expects($this->any())

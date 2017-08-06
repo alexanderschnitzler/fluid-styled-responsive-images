@@ -1,7 +1,7 @@
 <?php
 /** @var string $_EXTKEY */
 
-$EM_CONF[$_EXTKEY] = array(
+$EM_CONF[$_EXTKEY] = [
     'title' => 'Fluid Styled Responsive Images',
     'description' => 'Enables creation of responsive images for fluid styled content elements.',
     'category' => 'fe',
@@ -20,4 +20,4 @@ $EM_CONF[$_EXTKEY] = array(
         'conflicts' => [],
         'suggests' => [],
     ],
-);
+];
