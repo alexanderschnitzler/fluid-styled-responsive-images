@@ -129,17 +129,22 @@ class ImageRenderer implements FileRendererInterface
             $originalFile = $file;
         }
 
-        $defaultProcessConfiguration = [];
+        $defaultProcessConfiguration = [
+            'height' => $height,
+            'width' => $width
+        ];
+
         if ($this->getConfiguration()->getExtensionConfiguration()['enableSmallDefaultImage']) {
             $defaultProcessConfiguration['width'] = '360m';
-        } else {
-            $defaultProcessConfiguration['width'] = $this->defaultWidth . 'm';
         }
+
 
         try {
             $cropVariantCollection = CropVariantCollection::create((string)$file->getProperty('crop'));
             $defaultCropArea = $cropVariantCollection->getCropArea();
-            $defaultProcessConfiguration['crop'] = !$defaultCropArea->isEmpty() ? $defaultCropArea : null;
+            $defaultProcessConfiguration['crop'] = !$defaultCropArea->isEmpty() ?
+                $defaultCropArea->makeAbsoluteBasedOnFile($file) :
+                null;
         } catch (\Exception $e) {
             $defaultProcessConfiguration['crop'] = null;
         }
