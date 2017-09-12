@@ -1,2 +1,5 @@
 # cat=basic/enable; type=boolean; label=LLL:EXT:fluid_styled_responsive_images/Resources/Private/Language/locallang_be.xlf:extconf.enableSmallDefaultImage
 enableSmallDefaultImage = 1
+
+# cat=basic/enable; type=string; label=LLL:EXT:fluid_styled_responsive_images/Resources/Private/Language/locallang_be.xlf:extconf.smallDefaultImageWidth
+smallDefaultImageWidth = 360m

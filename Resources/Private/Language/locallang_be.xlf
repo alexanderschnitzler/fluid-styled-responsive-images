@@ -6,6 +6,9 @@
             <trans-unit id="extconf.enableSmallDefaultImage" xml:space="preserve">
                 <source>Enable small(360px width) default image? (Useful with polyfills)</source>
             </trans-unit>
+            <trans-unit id="extconf.smallDefaultImageWidth" xml:space="preserve">
+                <source>Width for Small Default Images</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
