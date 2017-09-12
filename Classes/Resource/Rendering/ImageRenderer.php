@@ -139,7 +139,9 @@ class ImageRenderer implements FileRendererInterface
         try {
             $cropVariantCollection = CropVariantCollection::create((string)$file->getProperty('crop'));
             $defaultCropArea = $cropVariantCollection->getCropArea();
-            $defaultProcessConfiguration['crop'] = !$defaultCropArea->isEmpty() ? $defaultCropArea : null;
+            $defaultProcessConfiguration['crop'] = !$defaultCropArea->isEmpty() ?
+                $defaultCropArea->makeAbsoluteBasedOnFile($file) :
+                null;
         } catch (\Exception $e) {
             $defaultProcessConfiguration['crop'] = null;
         }
