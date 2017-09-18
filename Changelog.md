@@ -1,3 +1,9 @@
+8.7.1 / 17-09-19
+==================
+
+  * 2017-09-18  3c81598  [TASK] Add TYPO3 8.7.3 and 8.7.4 to testing matrix (Alexander Schnitzler)
+  * 2017-09-18  2d6b793  [BUGFIX] Fix cropping with TYPO3 >= 8.7.4 (Devid Messner)
+
 8.7.0 / 17-08-06
 ==================
 
