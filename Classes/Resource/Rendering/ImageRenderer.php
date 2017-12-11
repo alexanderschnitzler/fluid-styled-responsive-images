@@ -173,6 +173,7 @@ class ImageRenderer implements FileRendererInterface
         $configuration = $this->getConfiguration();
 
         $ignoredWidths = [];
+        $validWidths = [];
 
         foreach ($configuration->getSourceCollection() as $sourceCollection) {
             try {
@@ -192,6 +193,10 @@ class ImageRenderer implements FileRendererInterface
                     throw new \RuntimeException();
                 }
 
+                $width = (int)$sourceCollection['width'];
+                $validWidths[$width]['dataKey'] = $sourceCollection['dataKey'];
+                $validWidths[$width]['srcset'] = $sourceCollection['srcset'];
+
                 $localProcessingConfiguration = $defaultProcessConfiguration;
                 $localProcessingConfiguration['width'] = $sourceCollection['width'];
 
@@ -208,7 +213,7 @@ class ImageRenderer implements FileRendererInterface
             }
         }
 
-        if ($this->getMinKeyFromArray($ignoredWidths)) {
+        if ($this->getMinKeyFromArray($ignoredWidths) && !empty($validWidths)) {
             $width = $this->getMinKeyFromArray($ignoredWidths);
 
             $url = $configuration->getAbsRefPrefix() . $originalFile->getPublicUrl();
