@@ -172,6 +172,8 @@ class ImageRenderer implements FileRendererInterface
     {
         $configuration = $this->getConfiguration();
 
+        $ignoredWidths = [];
+
         foreach ($configuration->getSourceCollection() as $sourceCollection) {
             try {
                 if (!is_array($sourceCollection)) {
@@ -183,6 +185,10 @@ class ImageRenderer implements FileRendererInterface
                 }
 
                 if ((int)$sourceCollection['width'] > (int)$this->defaultWidth) {
+                    $width = (int)$sourceCollection['width'];
+                    $ignoredWidths[$width]['dataKey'] = $sourceCollection['dataKey'];
+                    $ignoredWidths[$width]['srcset'] = $sourceCollection['srcset'];
+
                     throw new \RuntimeException();
                 }
 
@@ -196,11 +202,21 @@ class ImageRenderer implements FileRendererInterface
 
                 $url = $configuration->getAbsRefPrefix() . $processedFile->getPublicUrl();
 
-                $this->data['data-' . $sourceCollection['dataKey']] = $url;
-                $this->srcset[] = $url . rtrim(' ' . $sourceCollection['srcset'] ?: '');
+                $this->addItemForRendering($url, $sourceCollection['dataKey'], $sourceCollection['srcset']);
             } catch (\Exception $ignoredException) {
                 continue;
             }
+        }
+
+        if ($this->getMinKeyFromArray($ignoredWidths)) {
+            $width = $this->getMinKeyFromArray($ignoredWidths);
+
+            $url = $configuration->getAbsRefPrefix() . $originalFile->getPublicUrl();
+
+            $dataKey = $ignoredWidths[$width]['dataKey'];
+            $srcset = $ignoredWidths[$width]['srcset'];
+
+            $this->addItemForRendering($url, $dataKey, $srcset);
         }
     }
 
@@ -287,5 +303,23 @@ class ImageRenderer implements FileRendererInterface
         }
 
         return $tagBuilder->render();
+    }
+
+    /**
+     * @param array $items
+     * @return mixed
+     */
+    protected function getMinKeyFromArray(array $items) {
+        return min(array_keys($items));
+    }
+
+    /**
+     * @param string $url
+     * @param string $dataKey
+     * @param string $srcset
+     */
+    protected function addItemForRendering($url, $dataKey, $srcset) {
+        $this->data['data-' . $dataKey] = $url;
+        $this->srcset[] = $url . rtrim(' ' . $srcset ?: '');
     }
 }
