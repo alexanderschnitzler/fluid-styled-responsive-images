@@ -18,7 +18,7 @@
     ],
     "require": {
         "php": "^7.0 || ^7.1",
-        "typo3/cms": "^9.0.0"
+        "typo3/cms-core": "^9.0.0"
     },
     "replace": {
         "fluid_styled_responsive_images": "self.version",
