@@ -216,7 +216,15 @@ class ImageRenderer implements FileRendererInterface
         if ($this->getMinKeyFromArray($ignoredWidths) && !empty($validWidths)) {
             $width = $this->getMinKeyFromArray($ignoredWidths);
 
-            $url = $configuration->getAbsRefPrefix() . $originalFile->getPublicUrl();
+            $localProcessingConfiguration = $defaultProcessConfiguration;
+            $localProcessingConfiguration['width'] = $this->defaultWidth . 'm';
+
+            $processedFile = $originalFile->process(
+                ProcessedFile::CONTEXT_IMAGECROPSCALEMASK,
+                $localProcessingConfiguration
+            );
+
+            $url = $configuration->getAbsRefPrefix() . $processedFile->getPublicUrl();
 
             $dataKey = $ignoredWidths[$width]['dataKey'];
             $srcset = $ignoredWidths[$width]['srcset'];
