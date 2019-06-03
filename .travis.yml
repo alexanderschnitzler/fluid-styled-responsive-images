@@ -1,17 +1,12 @@
 language: php
 
 php:
-  - 7.0
-  - 7.1
+  - "7.0"
+  - "7.1"
 
 env:
   matrix:
-    - TYPO3_VERSION=8.7.0
-    - TYPO3_VERSION=8.7.1
-    - TYPO3_VERSION=8.7.2
-    - TYPO3_VERSION=8.7.3
-    - TYPO3_VERSION=8.7.4
-    - TYPO3_VERSION=8.7.*
+    - TYPO3_VERSION=^8.7.0
 
 sudo: false
 
@@ -37,11 +32,17 @@ before_script:
   - cd .Build
   - mkdir -p build/logs/
   - mkdir -p coverage/
-  - composer require typo3/cms=$TYPO3_VERSION
+  - composer require typo3/cms-core=$TYPO3_VERSION
+  - composer require typo3/cms-version=$TYPO3_VERSION
+  - composer require typo3/cms-workspaces=$TYPO3_VERSION
   - export TYPO3_PATH_WEB=$TRAVIS_BUILD_DIR/.Build/web;
   - cd $TRAVIS_BUILD_DIR
 
 script:
+  - >
+    echo;
+    echo "Symlink vendor folder"
+    ln -sr .Build/vendor .Build/web/vendor
   - >
     echo;
     echo "Running php lint";
@@ -60,7 +61,8 @@ script:
     export PROCESSOR="ImageMagick";
     export PROCESSOR_PATH="/usr/bin/";
     export PROCESSOR_PATH_LZW="/usr/bin/";
-    php .Build/bin/phpunit --process-isolation --colors --coverage-php=.Build/coverage/functional.cov --configuration .Build/FunctionalTests.xml;
+    export TYPO3_ROOT_PATH="web/";
+    php .Build/bin/phpunit --process-isolation --colors --configuration .Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml .Build/web/typo3conf/ext/fluid_styled_responsive_images/Tests/Functional/;
 
 after_script:
   - cd .Build

@@ -5,8 +5,8 @@
         "GPL-2.0+"
     ],
     "require-dev": {
-        "php": "~7.0 || ~7.1",
-        "typo3/testing-framework": "^1.1.0",
+        "php": "^7.0 <7.4",
+        "typo3/testing-framework": "^2.0",
         "phpunit/phpcov": "^4.0.0",
         "codeclimate/php-test-reporter": "^0.4.4"
     },
