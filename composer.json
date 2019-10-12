@@ -21,7 +21,6 @@
         "typo3/cms-core": "^8.7.0"
     },
     "replace": {
-        "fluid_styled_responsive_images": "self.version",
         "typo3-ter/fluid-styled-responsive-images": "self.version"
     },
     "autoload": {
