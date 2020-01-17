@@ -11,7 +11,7 @@ use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\TimeTracker\NullTimeTracker;
+use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
@@ -80,7 +80,7 @@ class ImageRendererTest extends FunctionalTestCase
 
     protected function setUpTSFE()
     {
-        $GLOBALS['TT'] = new NullTimeTracker();
+        $GLOBALS['TT'] = new TimeTracker(false);
 
         /** @var TypoScriptFrontendController $TSFE */
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, [], 1, 0);
