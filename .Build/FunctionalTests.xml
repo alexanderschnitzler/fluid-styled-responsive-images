@@ -11,18 +11,17 @@
     stopOnFailure="false"
     stopOnIncomplete="false"
     stopOnSkipped="false"
-    strict="false"
     verbose="false"
 >
     <testsuites>
         <testsuite name="Functional Test">
-            <directory>web/typo3conf/ext/fluid_styled_responsive_images/Tests/Functional/</directory>
+            <directory>public/typo3conf/ext/fluid_styled_responsive_images/Tests/Functional/</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">web/typo3conf/ext/fluid_styled_responsive_images/Classes/</directory>
+            <directory suffix=".php">public/typo3conf/ext/fluid_styled_responsive_images/Classes/</directory>
         </whitelist>
     </filter>
 </phpunit>

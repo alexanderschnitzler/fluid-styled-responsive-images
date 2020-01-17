@@ -1,6 +1,6 @@
 # TYPO3 CMS Extension "fluid_styled_responsive_images"
 
-[![Build Status](https://travis-ci.org/alexanderschnitzler/fluid-styled-responsive-images.svg?branch=master)](https://travis-ci.org/alexanderschnitzler/fluid-styled-responsive-images)
+![Build Status](https://github.com/alexanderschnitzler/fluid-styled-responsive-images/workflows/CI/badge.svg?branch=TYPO3_95)
 
 This project aims to provide an image-rendering process that will render
 responsive images with fluid, where the assumption is made, that TYPO3 CMS

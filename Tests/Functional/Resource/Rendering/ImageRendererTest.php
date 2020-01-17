@@ -26,7 +26,6 @@ class ImageRendererTest extends FunctionalTestCase
      * @var array
      */
     protected $testExtensionsToLoad = [
-        'typo3/sysext/version',
         'typo3/sysext/workspaces',
         'typo3conf/ext/fluid_styled_responsive_images'
     ];

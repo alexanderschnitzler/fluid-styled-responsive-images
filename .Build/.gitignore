@@ -2,7 +2,10 @@
 /build/
 /coverage/
 /vendor/
-/web/
+/public/
+/var/
 /.env
 /functional-tests.sh
 /unit-tests.sh
+/composer.json
+/.phplint-cache

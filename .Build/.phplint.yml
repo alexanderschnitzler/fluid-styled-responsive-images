@@ -1,0 +1,4 @@
+path: .Build/public/typo3conf/ext/fluid_styled_responsive_images
+jobs: 10
+extensions:
+- php

@@ -1,46 +1,30 @@
 {
-    "name": "schnitzler/fluid-styled-responsive-images",
-    "description": "",
-    "license": [
-        "GPL-2.0+"
-    ],
-    "require-dev": {
-        "php": "~7.0 || ~7.1",
-        "typo3/testing-framework": "^1.1.0",
-        "phpunit/phpcov": "^4.0.0",
-        "codeclimate/php-test-reporter": "^0.4.4"
-    },
     "autoload": {
         "psr-4": {
-            "Schnitzler\\FluidStyledResponsiveImages\\": "web/typo3conf/ext/fluid_styled_responsive_images/Classes/"
+            "Schnitzler\\FluidStyledResponsiveImages\\": "public/typo3conf/ext/fluid_styled_responsive_images/Classes/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Schnitzler\\FluidStyledResponsiveImages\\Tests\\": "web/typo3conf/ext/fluid_styled_responsive_images/Tests/"
+            "Schnitzler\\FluidStyledResponsiveImages\\Tests\\": "public/typo3conf/ext/fluid_styled_responsive_images/Tests/"
         }
-    },
-    "replace": {
-        "fluid_styled_responsive_images": "self.version",
-        "typo3-ter/fluid-styled-responsive-images": "self.version"
     },
     "config": {
-        "vendor-dir": "vendor",
-        "bin-dir": "bin",
-        "preferred-install": {
-            "*": "dist"
-        }
+        "bin-dir": "bin"
     },
     "scripts": {
         "post-autoload-dump": [
-            "mkdir -p web/typo3conf/ext/",
-            "[ -L web/typo3conf/ext/fluid_styled_responsive_images ] || ln -snvf ../../../../. web/typo3conf/ext/fluid_styled_responsive_images"
+            "mkdir -p public/typo3conf/ext/",
+            "[ -L public/typo3conf/ext/fluid_styled_responsive_images ] || ln -snvf ../../../../. public/typo3conf/ext/fluid_styled_responsive_images"
         ]
     },
-    "extra": {
-        "typo3/cms": {
-            "cms-package-dir": "{$vendor-dir}/typo3/cms",
-            "web-dir": "web"
-        }
+    "require": {
+        "typo3/minimal": "^9.5",
+        "typo3/cms-workspaces": "^9.5",
+        "phpunit/phpcov": "^5.0"
+    },
+    "require-dev": {
+        "typo3/testing-framework": "^4",
+        "overtrue/phplint": "^1.2"
     }
 }
