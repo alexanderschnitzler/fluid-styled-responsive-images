@@ -86,7 +86,7 @@ class ImageRendererTest extends FunctionalTestCase
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, [], 1, 0);
         $TSFE->sys_page = GeneralUtility::makeInstance(PageRepository::class);
         $TSFE->initTemplate();
-        $TSFE->getPageAndRootline();
+        $TSFE->getPageAndRootlineWithDomain(1);
         $TSFE->getConfigArray();
 
         $GLOBALS['TSFE'] = $TSFE;
