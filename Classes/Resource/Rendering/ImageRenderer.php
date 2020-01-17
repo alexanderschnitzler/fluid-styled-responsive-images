@@ -130,7 +130,7 @@ class ImageRenderer implements FileRendererInterface
         }
 
         $defaultProcessConfiguration = [];
-        if ($this->getConfiguration()->getExtensionConfiguration()['enableSmallDefaultImage']) {
+        if ($this->getConfiguration()->getExtensionConfiguration()['enableSmallDefaultImage'] ?? false) {
             $defaultProcessConfiguration['width'] = '360m';
         } else {
             $defaultProcessConfiguration['width'] = $this->defaultWidth . 'm';
@@ -201,8 +201,8 @@ class ImageRenderer implements FileRendererInterface
 
                 $url = $configuration->getAbsRefPrefix() . $processedFile->getPublicUrl();
 
-                $this->data['data-' . $sourceCollection['dataKey']] = $url;
-                $this->srcset[] = $url . rtrim(' ' . $sourceCollection['srcset'] ?: '');
+                $this->data['data-' . ($sourceCollection['dataKey'] ?? '')] = $url;
+                $this->srcset[] = $url . rtrim(' ' . ($sourceCollection['srcset'] ?? ''));
             } catch (\Exception $ignoredException) {
                 continue;
             }
