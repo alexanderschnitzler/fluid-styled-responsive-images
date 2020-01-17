@@ -18,7 +18,7 @@
     ],
     "require": {
         "php": "^7.2",
-        "typo3/cms-core": "^9.5.0"
+        "typo3/cms-core": "^10.2.0"
     },
     "replace": {
         "typo3-ter/fluid-styled-responsive-images": "self.version"
@@ -27,5 +27,14 @@
         "psr-4": {
             "Schnitzler\\FluidStyledResponsiveImages\\": "Classes/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Schnitzler\\FluidStyledResponsiveImages\\Tests\\": "Tests/"
+        }
+    },
+    "require-dev": {
+        "rector/rector": "^0.6.10",
+        "typo3/testing-framework": "^6"
     }
 }

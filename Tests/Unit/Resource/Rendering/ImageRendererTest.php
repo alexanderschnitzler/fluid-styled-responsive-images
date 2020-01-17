@@ -1,6 +1,8 @@
 <?php
-namespace Schnitzler\FluidStyledResponsiveImages\Resource\Rendering;
+namespace Schnitzler\FluidStyledResponsiveImages\Tests\Unit\Resource\Rendering;
 
+use Schnitzler\FluidStyledResponsiveImages\Resource\Rendering\ImageRenderer;
+use Schnitzler\FluidStyledResponsiveImages\Resource\Rendering\ImageRendererConfiguration;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\TestingFramework\Core\AccessibleObjectInterface;
@@ -36,7 +38,7 @@ class ImageRendererTest extends UnitTestCase
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->setUpProcessedFiles();
 

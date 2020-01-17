@@ -1,6 +1,6 @@
 # TYPO3 CMS Extension "fluid_styled_responsive_images"
 
-![Build Status](https://github.com/alexanderschnitzler/fluid-styled-responsive-images/workflows/CI/badge.svg?branch=TYPO3_95)
+![Build Status](https://github.com/alexanderschnitzler/fluid-styled-responsive-images/workflows/CI/badge.svg?branch=master)
 
 [![Total Downloads](https://poser.pugx.org/schnitzler/fluid-styled-responsive-images/downloads)](https://packagist.org/packages/schnitzler/fluid-styled-responsive-images)
 [![Latest Stable Version](https://poser.pugx.org/schnitzler/fluid-styled-responsive-images/v/stable)](https://packagist.org/packages/schnitzler/fluid-styled-responsive-images)

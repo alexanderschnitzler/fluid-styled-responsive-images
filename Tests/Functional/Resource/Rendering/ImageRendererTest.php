@@ -2,15 +2,21 @@
 
 namespace Schnitzler\FluidStyledResponsiveImages\Tests\Functional\Resource\Rendering;
 
+use Psr\Log\NullLogger;
 use Schnitzler\FluidStyledResponsiveImages\Resource\Rendering\ImageRenderer;
 use Schnitzler\FluidStyledResponsiveImages\Resource\Rendering\ImageRendererConfiguration;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Routing\PageArguments;
+use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -38,7 +44,7 @@ class ImageRendererTest extends FunctionalTestCase
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->configurationToUseInTestInstance['GFX']['processor'] = getenv('PROCESSOR') ?: 'ImageMagick';
         $this->configurationToUseInTestInstance['GFX']['processor_path'] = getenv('PROCESSOR_PATH') ?: '/usr/local/';
@@ -80,11 +86,20 @@ class ImageRendererTest extends FunctionalTestCase
     protected function setUpTSFE()
     {
         $GLOBALS['TT'] = new TimeTracker(false);
+        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest(
+            new Uri('')
+        );
 
+        $site = new NullSite();
         /** @var TypoScriptFrontendController $TSFE */
-        $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, [], 1, 0);
+        $TSFE = new TypoScriptFrontendController(
+            GeneralUtility::makeInstance(Context::class),
+            $site,
+            $site->getDefaultLanguage(),
+            new PageArguments(1, '0', [])
+        );
+        $TSFE->setLogger(new NullLogger());
         $TSFE->sys_page = GeneralUtility::makeInstance(PageRepository::class);
-        $TSFE->initTemplate();
         $TSFE->getPageAndRootlineWithDomain(1);
         $TSFE->getConfigArray();
 
