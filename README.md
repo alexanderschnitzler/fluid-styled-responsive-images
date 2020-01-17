@@ -2,6 +2,11 @@
 
 ![Build Status](https://github.com/alexanderschnitzler/fluid-styled-responsive-images/workflows/CI/badge.svg?branch=TYPO3_95)
 
+[![Total Downloads](https://poser.pugx.org/schnitzler/fluid-styled-responsive-images/downloads)](https://packagist.org/packages/schnitzler/fluid-styled-responsive-images)
+[![Latest Stable Version](https://poser.pugx.org/schnitzler/fluid-styled-responsive-images/v/stable)](https://packagist.org/packages/schnitzler/fluid-styled-responsive-images)
+[![Latest Unstable Version](https://poser.pugx.org/schnitzler/fluid-styled-responsive-images/v/unstable)](https://packagist.org/packages/schnitzler/fluid-styled-responsive-images)
+[![License](https://poser.pugx.org/schnitzler/fluid-styled-responsive-images/license)](https://packagist.org/packages/schnitzler/fluid-styled-responsive-images)
+
 This project aims to provide an image-rendering process that will render
 responsive images with fluid, where the assumption is made, that TYPO3 CMS
 doesn't provide a mechanism outof the box for *fluid templates* while one
