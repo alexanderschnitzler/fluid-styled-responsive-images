@@ -9,7 +9,7 @@
         "images"
     ],
     "homepage": "https://github.com/alexanderschnitzler/fluid-styled-responsive-images",
-    "license": "GPL-2.0+",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Alexander Schnitzler",
@@ -17,11 +17,10 @@
         }
     ],
     "require": {
-        "php": "^7.0 || ^7.1",
-        "typo3/cms": "^9.0.0"
+        "php": "^7.2",
+        "typo3/cms-core": "^9.5.0"
     },
     "replace": {
-        "fluid_styled_responsive_images": "self.version",
         "typo3-ter/fluid-styled-responsive-images": "self.version"
     },
     "autoload": {
