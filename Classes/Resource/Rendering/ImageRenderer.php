@@ -30,7 +30,7 @@ class ImageRenderer implements FileRendererInterface
     static protected $configuration;
 
     /**
-     * @var array
+     * @var array<string>
      */
     protected $possibleMimeTypes = [
         'image/jpg',
@@ -40,17 +40,17 @@ class ImageRenderer implements FileRendererInterface
     ];
 
     /**
-     * @var array
+     * @var array<string>
      */
     protected $sizes = [];
 
     /**
-     * @var array
+     * @var array<string>
      */
     protected $srcset = [];
 
     /**
-     * @var array
+     * @var array<string,string>
      */
     protected $data = [];
 
@@ -69,7 +69,7 @@ class ImageRenderer implements FileRendererInterface
      */
     protected function getConfiguration(): ImageRendererConfiguration
     {
-        if (!static::$configuration instanceof ImageRendererConfiguration) {
+        if (static::$configuration === null) {
             static::$configuration = GeneralUtility::makeInstance(ImageRendererConfiguration::class);
         }
 
@@ -81,7 +81,7 @@ class ImageRenderer implements FileRendererInterface
      */
     protected function getTagBuilder(): TagBuilder
     {
-        if (!static::$tagBuilder instanceof TagBuilder) {
+        if (static::$tagBuilder === null) {
             static::$tagBuilder = GeneralUtility::makeInstance(TagBuilder::class);
         }
 
@@ -109,7 +109,7 @@ class ImageRenderer implements FileRendererInterface
      * @param FileInterface $file
      * @param int|string $width TYPO3 known format; examples: 220, 200m or 200c
      * @param int|string $height TYPO3 known format; examples: 220, 200m or 200c
-     * @param array $options
+     * @param array<string,mixed> $options
      * @param bool $usedPathsRelativeToCurrentScript See $file->getPublicUrl()
      * @return string
      */
@@ -133,7 +133,8 @@ class ImageRenderer implements FileRendererInterface
         }
 
         $defaultProcessConfiguration = [];
-        if ($this->getConfiguration()->getExtensionConfiguration()['enableSmallDefaultImage'] ?? false) {
+        $enableSmallDefaultImage = (bool)($this->getConfiguration()->getExtensionConfiguration()['enableSmallDefaultImage'] ?? false);
+        if ($enableSmallDefaultImage) {
             $defaultProcessConfiguration['width'] = '360m';
         } else {
             $defaultProcessConfiguration['width'] = $this->defaultWidth . 'm';
@@ -174,7 +175,7 @@ class ImageRenderer implements FileRendererInterface
 
     /**
      * @param File $originalFile
-     * @param array $defaultProcessConfiguration
+     * @param array<string,mixed> $defaultProcessConfiguration
      */
     protected function processSourceCollection(File $originalFile, array $defaultProcessConfiguration): void
     {
@@ -217,7 +218,7 @@ class ImageRenderer implements FileRendererInterface
      * @param FileInterface $file
      * @param int $width
      * @param int $height
-     * @param array $options
+     * @param array<string,string> $options
      *
      * @return string
      */
@@ -232,21 +233,21 @@ class ImageRenderer implements FileRendererInterface
         try {
             $alt = trim($file->getProperty('alternative'));
 
-            if (empty($alt)) {
+            if ($alt === '') {
                 throw new \LogicException;
             }
         } catch (\Exception $e) {
-            $alt = isset($options['alt']) && !empty($options['alt']) ? $options['alt'] : '';
+            $alt = isset($options['alt']) && is_string($options['alt']) ? $options['alt'] : '';
         }
 
         try {
             $title = trim($file->getProperty('title'));
 
-            if (empty($title)) {
+            if ($title === '') {
                 throw new \LogicException;
             }
         } catch (\Exception $e) {
-            $title = isset($options['title']) && !empty($options['title']) ? $options['title'] : '';
+            $title = isset($options['title']) && is_string($options['title']) ? $options['alt'] : '';
         }
 
         $tagBuilder->addAttribute('src', $src);
@@ -255,19 +256,17 @@ class ImageRenderer implements FileRendererInterface
 
         switch ($configuration->getLayoutKey()) {
             case 'srcset':
-                if (!empty($this->srcset)) {
+                if (count($this->srcset) > 0) {
                     $tagBuilder->addAttribute('srcset', implode(', ', $this->srcset));
-                    if (!empty($this->sizes)) {
+                    if (count($this->sizes) > 0) {
                         $tagBuilder->addAttribute('sizes', implode(', ', $this->sizes));
                     }
                 }
 
                 break;
             case 'data':
-                if (!empty($this->data)) {
-                    foreach ($this->data as $key => $value) {
-                        $tagBuilder->addAttribute($key, $value);
-                    }
+                foreach ($this->data as $key => $value) {
+                    $tagBuilder->addAttribute($key, $value);
                 }
                 break;
             default:

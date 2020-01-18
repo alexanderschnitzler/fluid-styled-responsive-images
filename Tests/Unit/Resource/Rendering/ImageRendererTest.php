@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Schnitzler\FluidStyledResponsiveImages\Tests\Unit\Resource\Rendering;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Schnitzler\FluidStyledResponsiveImages\Resource\Rendering\ImageRenderer;
 use Schnitzler\FluidStyledResponsiveImages\Resource\Rendering\ImageRendererConfiguration;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
-use TYPO3\TestingFramework\Core\AccessibleObjectInterface;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -18,22 +18,22 @@ class ImageRendererTest extends UnitTestCase
 {
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface|ImageRendererConfiguration
+     * @var MockObject|ImageRendererConfiguration
      */
     protected $imageRendererConfiguration;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface|ImageRenderer
+     * @var MockObject|ImageRenderer
      */
     protected $imageRenderer;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface|File
+     * @var MockObject|File
      */
     protected $file;
 
     /**
-     * @var array
+     * @var array<int,MockObject>
      */
     protected $processedFiles = [];
 
@@ -42,30 +42,32 @@ class ImageRendererTest extends UnitTestCase
      */
     public function setUp(): void
     {
+        parent::setUp();
+
         $this->setUpProcessedFiles();
 
-        $this->file = $this->getAccessibleMock(
-            File::class,
-            ['getProperty', 'process'],
-            [],
-            '',
-            false
-        );
+        $this->file = $this->getMockBuilder(File::class)
+            ->onlyMethods(['getProperty', 'process'])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
 
         $this->file
             ->method('getProperty')
             ->willReturnCallback(function ($in): string {
                 switch ($in) {
                     case 'title':
-                        return 'title';
+                        $out =  'title';
                         break;
                     case 'alternative':
-                        return 'alt';
+                        $out =  'alt';
                         break;
                     default:
-                        return '';
+                        $out = '';
                         break;
                 }
+
+                return $out;
             });
 
         $this->imageRendererConfiguration = $this->getMockBuilder(ImageRendererConfiguration::class)
@@ -81,7 +83,7 @@ class ImageRendererTest extends UnitTestCase
             ->willReturn([]);
 
         $this->imageRenderer = $this->getMockBuilder(ImageRenderer::class)
-            ->setMethods(['getConfiguration'])
+            ->onlyMethods(['getConfiguration'])
             ->getMock();
 
         $this->imageRenderer
@@ -95,7 +97,7 @@ class ImageRendererTest extends UnitTestCase
     public function setUpProcessedFiles(): void
     {
         $processedFile = $this->getMockBuilder(ProcessedFile::class)
-            ->setMethods(['getPublicUrl', 'getProperty'])
+            ->onlyMethods(['getPublicUrl', 'getProperty'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -110,7 +112,7 @@ class ImageRendererTest extends UnitTestCase
         $this->processedFiles[0] = $processedFile;
 
         $processedFile = $this->getMockBuilder(ProcessedFile::class)
-            ->setMethods(['getPublicUrl'])
+            ->onlyMethods(['getPublicUrl'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -121,7 +123,7 @@ class ImageRendererTest extends UnitTestCase
         $this->processedFiles[1] = $processedFile;
 
         $processedFile = $this->getMockBuilder(ProcessedFile::class)
-            ->setMethods(['getPublicUrl'])
+            ->onlyMethods(['getPublicUrl'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -138,19 +140,19 @@ class ImageRendererTest extends UnitTestCase
     public function testWithSrcSetAndWithoutSourceCollection(): void
     {
         $this->file
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('process')
-            ->will($this->returnValue($this->processedFiles[0]));
+            ->willReturn($this->processedFiles[0]);
 
         $this->imageRendererConfiguration
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getSourceCollection')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $this->imageRendererConfiguration
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getLayoutKey')
-            ->will($this->returnValue('srcset'));
+            ->willReturn('srcset');
 
         $result = $this->imageRenderer->render(
             $this->file,
@@ -159,7 +161,7 @@ class ImageRendererTest extends UnitTestCase
             []
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             '<img src="image.jpg" alt="alt" title="title" />',
             $result,
             'sizes-attribute is omitted when no sizes are given'
@@ -172,24 +174,24 @@ class ImageRendererTest extends UnitTestCase
     public function testWithSrcSetAndSourceCollection(): void
     {
         $this->file
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('process')
-            ->will($this->returnValue($this->processedFiles[1]));
+            ->willReturn($this->processedFiles[1]);
 
         $this->file
-            ->expects($this->at(2))
+            ->expects(self::at(2))
             ->method('process')
-            ->will($this->returnValue($this->processedFiles[2]));
+            ->willReturn($this->processedFiles[2]);
 
         $this->file
-            ->expects($this->at(3))
+            ->expects(self::at(3))
             ->method('process')
-            ->will($this->returnValue($this->processedFiles[0]));
+            ->willReturn($this->processedFiles[0]);
 
         $this->imageRendererConfiguration
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getSourceCollection')
-            ->will($this->returnValue([
+            ->willReturn([
                 10 => [
                     'width' => '360m',
                     'srcset' => '360w',
@@ -199,14 +201,14 @@ class ImageRendererTest extends UnitTestCase
                     'srcset' => '720w',
                     'sizes' => '(min-width: 360px) 720px',
                 ]
-            ]));
+            ]);
 
         $this->imageRendererConfiguration
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getLayoutKey')
-            ->will($this->returnValue('srcset'));
+            ->willReturn('srcset');
 
-        $this->assertEquals(
+        self::assertEquals(
             '<img src="image.jpg" alt="alt" title="title" srcset="image360.jpg 360w, image720.jpg 720w" sizes="(min-width: 360px) 720px" />',
             $this->imageRenderer->render(
                 $this->file,
@@ -223,21 +225,21 @@ class ImageRendererTest extends UnitTestCase
     public function testWithDataAndWithoutSourceCollection(): void
     {
         $this->file
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('process')
-            ->will($this->returnValue($this->processedFiles[0]));
+            ->willReturn($this->processedFiles[0]);
 
         $this->imageRendererConfiguration
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getSourceCollection')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $this->imageRendererConfiguration
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getLayoutKey')
-            ->will($this->returnValue('data'));
+            ->willReturn('data');
 
-        $this->assertEquals(
+        self::assertEquals(
             '<img src="image.jpg" alt="alt" title="title" />',
             $this->imageRenderer->render(
                 $this->file,
@@ -254,24 +256,24 @@ class ImageRendererTest extends UnitTestCase
     public function testWithDataAndSourceCollection(): void
     {
         $this->file
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('process')
-            ->will($this->returnValue($this->processedFiles[1]));
+            ->willReturn($this->processedFiles[1]);
 
         $this->file
-            ->expects($this->at(2))
+            ->expects(self::at(2))
             ->method('process')
-            ->will($this->returnValue($this->processedFiles[2]));
+            ->willReturn($this->processedFiles[2]);
 
         $this->file
-            ->expects($this->at(3))
+            ->expects(self::at(3))
             ->method('process')
-            ->will($this->returnValue($this->processedFiles[0]));
+            ->willReturn($this->processedFiles[0]);
 
         $this->imageRendererConfiguration
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getSourceCollection')
-            ->will($this->returnValue([
+            ->willReturn([
                 10 => [
                     'width' => '360m',
                     'dataKey' => 'small',
@@ -280,14 +282,14 @@ class ImageRendererTest extends UnitTestCase
                     'width' => '720m',
                     'dataKey' => 'small-retina',
                 ]
-            ]));
+            ]);
 
         $this->imageRendererConfiguration
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getLayoutKey')
-            ->will($this->returnValue('data'));
+            ->willReturn('data');
 
-        $this->assertEquals(
+        self::assertEquals(
             '<img src="image.jpg" alt="alt" title="title" data-small="image360.jpg" data-small-retina="image720.jpg" />',
             $this->imageRenderer->render(
                 $this->file,

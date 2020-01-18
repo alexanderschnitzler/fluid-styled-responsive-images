@@ -8,7 +8,6 @@ use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
 /**
  * Class ImageRendererConfiguration
@@ -17,7 +16,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 class ImageRendererConfiguration
 {
     /**
-     * @var array
+     * @var array<string,mixed>
      */
     protected $extensionConfiguration;
 
@@ -27,12 +26,12 @@ class ImageRendererConfiguration
     protected $typoScriptService;
 
     /**
-     * @var array
+     * @var array<string,mixed>
      */
     protected $settings;
 
     /**
-     * @var array
+     * @var array<string>
      */
     protected $genericTagAttributes = [
         'class',
@@ -67,14 +66,13 @@ class ImageRendererConfiguration
             );
 
             $this->extensionConfiguration = is_array($extensionConfiguration)
-                ? (array)$extensionConfiguration
+                ? $extensionConfiguration
                 : []
             ;
         }
 
         $this->settings = [];
         $this->typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
-        $this->tagBuilder = GeneralUtility::makeInstance(TagBuilder::class);
 
         $configuration = $this->typoScriptService->convertTypoScriptArrayToPlainArray($this->getTypoScriptSetup());
 
@@ -114,7 +112,7 @@ class ImageRendererConfiguration
     }
 
     /**
-     * @return array
+     * @return array<string,mixed>
      */
     public function getSourceCollection(): array
     {
@@ -123,15 +121,15 @@ class ImageRendererConfiguration
     }
 
     /**
-     * @return array
+     * @return array<string,mixed>
      */
     protected function getTypoScriptSetup(): array
     {
-        if (!$this->getTypoScriptFrontendController() instanceof TypoScriptFrontendController) {
+        if ($this->getTypoScriptFrontendController() === null) {
             return [];
         }
 
-        if (!$this->getTypoScriptFrontendController()->tmpl instanceof TemplateService) {
+        if ($this->getTypoScriptFrontendController()->tmpl === null) {
             return [];
         }
 
@@ -139,7 +137,7 @@ class ImageRendererConfiguration
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getGenericTagAttributes(): array
     {
@@ -147,7 +145,7 @@ class ImageRendererConfiguration
     }
 
     /**
-     * @return array
+     * @return array<string,mixed>
      */
     public function getExtensionConfiguration(): array
     {
@@ -155,10 +153,10 @@ class ImageRendererConfiguration
     }
 
     /**
-     * @return TypoScriptFrontendController
+     * @return TypoScriptFrontendController|null
      */
-    protected function getTypoScriptFrontendController(): TypoScriptFrontendController
+    protected function getTypoScriptFrontendController(): ?TypoScriptFrontendController
     {
-        return $GLOBALS['TSFE'];
+        return $GLOBALS['TSFE'] ?? null;
     }
 }

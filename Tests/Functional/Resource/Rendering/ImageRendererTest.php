@@ -30,7 +30,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 class ImageRendererTest extends FunctionalTestCase
 {
     /**
-     * @var array
+     * @var iterable<int,string>
      */
     protected $testExtensionsToLoad = [
         'typo3/sysext/workspaces',
@@ -47,9 +47,9 @@ class ImageRendererTest extends FunctionalTestCase
      */
     public function setUp(): void
     {
-        $this->configurationToUseInTestInstance['GFX']['processor'] = getenv('PROCESSOR') ?: 'ImageMagick';
-        $this->configurationToUseInTestInstance['GFX']['processor_path'] = getenv('PROCESSOR_PATH') ?: '/usr/local/';
-        $this->configurationToUseInTestInstance['GFX']['processor_path_lzw'] = getenv('PROCESSOR_PATH_LZW') ?: '/usr/local/';
+        $this->configurationToUseInTestInstance['GFX']['processor'] = getenv('PROCESSOR') ?? 'ImageMagick';
+        $this->configurationToUseInTestInstance['GFX']['processor_path'] = getenv('PROCESSOR_PATH') ?? '/usr/local/';
+        $this->configurationToUseInTestInstance['GFX']['processor_path_lzw'] = getenv('PROCESSOR_PATH_LZW') ?? '/usr/local/';
 
         parent::setUp();
         parent::setUpBackendUserFromFixture(1);
@@ -65,19 +65,21 @@ class ImageRendererTest extends FunctionalTestCase
 
         // Clean up processed files
         $connectionPool->getConnectionForTable('sys_file_processedfile')->truncate('sys_file_processedfile');
-        foreach (glob(PATH_site . 'fileadmin/_processed_/*') as $file) {
+        $files = glob(PATH_site . 'fileadmin/_processed_/*');
+        $files = is_array($files) ? $files : [];
+        foreach ($files as $file) {
             if (is_dir($file)) {
                 GeneralUtility::rmdir($file, true);
             }
         }
 
-        /** @var ResourceFactory $storage */
-        $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
-
         /** @var Folder $folder */
-        $folder = $resourceFactory->retrieveFileOrFolderObject('1:/');
+        $folder = ResourceFactory::getInstance()->retrieveFileOrFolderObject('1:/');
         $file = $folder->createFile('guernica.jpg');
-        $file->setContents(file_get_contents(ORIGINAL_ROOT . 'typo3conf/ext/fluid_styled_responsive_images/.Build/fixtures/guernica.jpg'));
+        $contents = file_get_contents(ORIGINAL_ROOT . 'typo3conf/ext/fluid_styled_responsive_images/.Build/fixtures/guernica.jpg');
+        if (is_string($contents)) {
+            $file->setContents($contents);
+        }
 
         /** @var FileRepository $fileReposistory */
         $fileReposistory = GeneralUtility::makeInstance(FileRepository::class);
@@ -109,14 +111,13 @@ class ImageRendererTest extends FunctionalTestCase
 
     public function testSetupWorksCorrectly(): void
     {
-        static::assertInstanceOf(File::class, $this->file);
-        static::assertSame('beb5e4faa5ada0f57407976ca75e8719e7dbf02d', $this->file->getSha1());
-        static::assertSame(739459, $this->file->getSize());
-        static::assertSame('image/jpeg', $this->file->getMimeType());
+        self::assertSame('beb5e4faa5ada0f57407976ca75e8719e7dbf02d', $this->file->getSha1());
+        self::assertSame(739459, $this->file->getSize());
+        self::assertSame('image/jpeg', $this->file->getMimeType());
 
         $expectedDefaultCropArea = ['x' => 0.0, 'y' => 0.0, 'width' => 1.0, 'height' => 1.0];
         $actualDefaultCropArea = CropVariantCollection::create((string)$this->file->getProperty('crop'))->getCropArea()->asArray();
-        static::assertSame($expectedDefaultCropArea, $actualDefaultCropArea);
+        self::assertSame($expectedDefaultCropArea, $actualDefaultCropArea);
     }
 
     public function testEnableSmallDefaultImageRendersSmallDefaultImage(): void
@@ -126,7 +127,7 @@ class ImageRendererTest extends FunctionalTestCase
 
         /** @var ImageRendererConfiguration $imageRendererConfiguration */
         $imageRendererConfiguration = GeneralUtility::makeInstance(ImageRendererConfiguration::class);
-        static::assertSame($configuration, $imageRendererConfiguration->getExtensionConfiguration());
+        self::assertSame($configuration, $imageRendererConfiguration->getExtensionConfiguration());
 
         /** @var ImageRenderer $imageRenderer */
         $imageRenderer = GeneralUtility::makeInstance(ImageRenderer::class);
@@ -134,8 +135,8 @@ class ImageRendererTest extends FunctionalTestCase
 
         // If no rendering mode is enabled, width and height should be set
         // to the width and height of the processed image
-        static::assertContains('width="360"', $html);
-        static::assertContains('height="135"', $html, 'Rendered height was not 135');
+        self::assertContains('width="360"', $html);
+        self::assertContains('height="135"', $html, 'Rendered height was not 135');
     }
 
     public function testDisableSmallDefaultImageRendersOriginalImage(): void
@@ -145,7 +146,7 @@ class ImageRendererTest extends FunctionalTestCase
 
         /** @var ImageRendererConfiguration $imageRendererConfiguration */
         $imageRendererConfiguration = GeneralUtility::makeInstance(ImageRendererConfiguration::class);
-        static::assertSame($configuration, $imageRendererConfiguration->getExtensionConfiguration());
+        self::assertSame($configuration, $imageRendererConfiguration->getExtensionConfiguration());
 
         /** @var ImageRenderer $imageRenderer */
         $imageRenderer = GeneralUtility::makeInstance(ImageRenderer::class);
@@ -153,8 +154,8 @@ class ImageRendererTest extends FunctionalTestCase
 
         // If no rendering mode is enabled, width and height should be set
         // to the width and height of the original image
-        static::assertContains('width="1200"', $html, 'Rendered width was not 1200');
-        static::assertContains('height="450"', $html, 'Rendered height was not 450');
+        self::assertContains('width="1200"', $html, 'Rendered width was not 1200');
+        self::assertContains('height="450"', $html, 'Rendered height was not 450');
     }
 
     public function testRenderingWithSrcSetConfiguration(): void
@@ -179,26 +180,26 @@ class ImageRendererTest extends FunctionalTestCase
 
         $html = $imageRenderer->render($this->file, 1200, 1200);
 
-        static::assertContains('320w', $html, '320w must be rendered');
-        static::assertContains('640w', $html, '640w must be rendered');
-        static::assertContains('720w', $html, '720w must be rendered');
-        static::assertContains('960w', $html, '960w must be rendered');
+        self::assertContains('320w', $html, '320w must be rendered');
+        self::assertContains('640w', $html, '640w must be rendered');
+        self::assertContains('720w', $html, '720w must be rendered');
+        self::assertContains('960w', $html, '960w must be rendered');
 
         // 1260 is bigger than the defined 1200 max width, therefore it must not be rendered
-        static::assertNotContains('1260w', $html, '1260w must not be rendered');
+        self::assertNotContains('1260w', $html, '1260w must not be rendered');
         unset($html);
 
         // ---------------------------------------------------------------------------------------------------------------------
 
         $html = $imageRenderer->render($this->file, 1600, 1600);
 
-        static::assertContains('320w', $html, '320w must be rendered');
-        static::assertContains('640w', $html, '640w must be rendered');
-        static::assertContains('720w', $html, '720w must be rendered');
-        static::assertContains('960w', $html, '960w must be rendered');
+        self::assertContains('320w', $html, '320w must be rendered');
+        self::assertContains('640w', $html, '640w must be rendered');
+        self::assertContains('720w', $html, '720w must be rendered');
+        self::assertContains('960w', $html, '960w must be rendered');
 
         // 1260 is smaller than the defined 1600 max width, therefore it must not be rendered
-        static::assertContains('1260w', $html, '1260w must be rendered');
+        self::assertContains('1260w', $html, '1260w must be rendered');
     }
 
     public function testRenderingWithCropVariantCollectionConfiguration(): void
@@ -206,21 +207,20 @@ class ImageRendererTest extends FunctionalTestCase
         /** @var FileRepository $repository */
         $repository = GeneralUtility::makeInstance(FileRepository::class);
         $fileReferences = $repository->findByRelation('tt_content', 'image', 1);
-        static::assertCount(1, $fileReferences);
+        self::assertCount(1, $fileReferences);
 
-        /** @var FileReference $fileReference */
         $fileReference = reset($fileReferences);
-        static::assertInstanceOf(FileReference::class, $fileReference);
+        self::assertInstanceOf(FileReference::class, $fileReference);
 
         $cropVariantCollection = CropVariantCollection::create((string)$fileReference->getProperty('crop'));
-        static::assertNotEmpty($cropVariantCollection->asArray());
+        self::assertNotEmpty($cropVariantCollection->asArray());
 
         $defaultCropArea = $cropVariantCollection->getCropArea();
-        static::assertFalse($defaultCropArea->isEmpty());
-        static::assertSame(0.0, $defaultCropArea->asArray()['x']);
-        static::assertSame(0.0, $defaultCropArea->asArray()['y']);
-        static::assertSame(0.5, $defaultCropArea->asArray()['width']);
-        static::assertSame(0.5, $defaultCropArea->asArray()['height']);
+        self::assertFalse($defaultCropArea->isEmpty());
+        self::assertSame(0.0, $defaultCropArea->asArray()['x']);
+        self::assertSame(0.0, $defaultCropArea->asArray()['y']);
+        self::assertSame(0.5, $defaultCropArea->asArray()['width']);
+        self::assertSame(0.5, $defaultCropArea->asArray()['height']);
 
         // ---------------------------------------------------------------------------------------------------------------------
 
@@ -232,8 +232,8 @@ class ImageRendererTest extends FunctionalTestCase
             $fileReference->getProperty('height') // 1200
         );
 
-        static::assertContains('width="3200"', $html, 'width="3200" must be rendered');
-        static::assertContains('height="1200"', $html, 'height="1200" must be rendered');
+        self::assertContains('width="3200"', $html, 'width="3200" must be rendered');
+        self::assertContains('height="1200"', $html, 'height="1200" must be rendered');
 
         // ---------------------------------------------------------------------------------------------------------------------
 
@@ -245,8 +245,8 @@ class ImageRendererTest extends FunctionalTestCase
             1200
         );
 
-        static::assertContains('width="1600"', $html, 'width="1600" must be rendered');
-        static::assertContains('height="600"', $html, 'height="600" must be rendered');
+        self::assertContains('width="1600"', $html, 'width="1600" must be rendered');
+        self::assertContains('height="600"', $html, 'height="600" must be rendered');
     }
 
     public function testRenderingWithSrcSetAndCropVariantCollectionConfiguration(): void
@@ -269,21 +269,20 @@ class ImageRendererTest extends FunctionalTestCase
         /** @var FileRepository $repository */
         $repository = GeneralUtility::makeInstance(FileRepository::class);
         $fileReferences = $repository->findByRelation('tt_content', 'image', 1);
-        static::assertCount(1, $fileReferences);
+        self::assertCount(1, $fileReferences);
 
-        /** @var FileReference $fileReference */
         $fileReference = reset($fileReferences);
-        static::assertInstanceOf(FileReference::class, $fileReference);
+        self::assertInstanceOf(FileReference::class, $fileReference);
 
         $cropVariantCollection = CropVariantCollection::create((string)$fileReference->getProperty('crop'));
-        static::assertNotEmpty($cropVariantCollection->asArray());
+        self::assertNotEmpty($cropVariantCollection->asArray());
 
         $defaultCropArea = $cropVariantCollection->getCropArea();
-        static::assertFalse($defaultCropArea->isEmpty());
-        static::assertSame(0.0, $defaultCropArea->asArray()['x']);
-        static::assertSame(0.0, $defaultCropArea->asArray()['y']);
-        static::assertSame(0.5, $defaultCropArea->asArray()['width']);
-        static::assertSame(0.5, $defaultCropArea->asArray()['height']);
+        self::assertFalse($defaultCropArea->isEmpty());
+        self::assertSame(0.0, $defaultCropArea->asArray()['x']);
+        self::assertSame(0.0, $defaultCropArea->asArray()['y']);
+        self::assertSame(0.5, $defaultCropArea->asArray()['width']);
+        self::assertSame(0.5, $defaultCropArea->asArray()['height']);
 
         // ---------------------------------------------------------------------------------------------------------------------
 
@@ -295,10 +294,10 @@ class ImageRendererTest extends FunctionalTestCase
             $fileReference->getProperty('height') // 1200
         );
 
-        static::assertContains('320w', $html, '320w must be rendered');
-        static::assertContains('640w', $html, '640w must be rendered');
-        static::assertContains('720w', $html, '720w must be rendered');
-        static::assertContains('960w', $html, '960w must be rendered');
-        static::assertContains('1260w', $html, '1260w must be rendered');
+        self::assertContains('320w', $html, '320w must be rendered');
+        self::assertContains('640w', $html, '640w must be rendered');
+        self::assertContains('720w', $html, '720w must be rendered');
+        self::assertContains('960w', $html, '960w must be rendered');
+        self::assertContains('1260w', $html, '1260w must be rendered');
     }
 }
