@@ -45,7 +45,7 @@ jobs:
         run: .Build/bin/phplint --configuration=.Build/.phplint.yml --no-cache
 
       - name: (PHPUnit) Run unit tests
-        run: php .Build/bin/phpunit --colors --configuration .Build/UnitTests.xml;
+        run: php .Build/bin/phpunit --colors --coverage-php=.Build/coverage/unit.cov --configuration .Build/UnitTests.xml;
 
       - name: (PHPUnit) Run functional tests
         env:
@@ -56,4 +56,12 @@ jobs:
           PROCESSOR: ImageMagick
           PROCESSOR_PATH: /usr/bin/
           PROCESSOR_PATH_LZW: /usr/bin/
-        run: php .Build/bin/phpunit --process-isolation --colors --configuration .Build/FunctionalTests.xml;
+        run: php .Build/bin/phpunit --process-isolation --colors --coverage-php=.Build/coverage/functional.cov --configuration .Build/FunctionalTests.xml;
+
+      - name: (PHPCov) Merge coverage files
+        run: php .Build/bin/phpcov merge .Build/coverage --clover .Build/build/logs/clover.xml
+
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: .Build/build/logs/clover.xml

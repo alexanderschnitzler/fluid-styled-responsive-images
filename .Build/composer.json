@@ -24,6 +24,7 @@
     },
     "require-dev": {
         "typo3/testing-framework": "^6",
-        "overtrue/phplint": "^1.2"
+        "overtrue/phplint": "^1.2",
+        "phpunit/phpcov": "^6.0"
     }
 }
