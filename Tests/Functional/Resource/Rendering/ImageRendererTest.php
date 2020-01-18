@@ -133,8 +133,8 @@ class ImageRendererTest extends FunctionalTestCase
 
         // If no rendering mode is enabled, width and height should be set
         // to the width and height of the processed image
-        static::assertNotFalse(strpos($html, 'width="360"', 'Rendered width was not 360'));
-        static::assertNotFalse(strpos($html, 'height="135"'), 'Rendered height was not 135');
+        static::assertContains('width="360"', $html);
+        static::assertContains('height="135"', $html, 'Rendered height was not 135');
     }
 
     public function testDisableSmallDefaultImageRendersOriginalImage()
@@ -152,8 +152,8 @@ class ImageRendererTest extends FunctionalTestCase
 
         // If no rendering mode is enabled, width and height should be set
         // to the width and height of the original image
-        static::assertNotFalse(strpos($html, 'width="1200"'), 'Rendered width was not 1200');
-        static::assertNotFalse(strpos($html, 'height="450"'), 'Rendered height was not 450');
+        static::assertContains('width="1200"', $html, 'Rendered width was not 1200');
+        static::assertContains('height="450"', $html, 'Rendered height was not 450');
     }
 
     public function testRenderingWithSrcSetConfiguration()
@@ -178,26 +178,26 @@ class ImageRendererTest extends FunctionalTestCase
 
         $html = $imageRenderer->render($this->file, 1200, 1200);
 
-        static::assertNotFalse(strpos($html, '320w'), '320w must be rendered');
-        static::assertNotFalse(strpos($html, '640w'), '640w must be rendered');
-        static::assertNotFalse(strpos($html, '720w'), '720w must be rendered');
-        static::assertNotFalse(strpos($html, '960w'), '960w must be rendered');
+        static::assertContains('320w', $html, '320w must be rendered');
+        static::assertContains('640w', $html, '640w must be rendered');
+        static::assertContains('720w', $html, '720w must be rendered');
+        static::assertContains('960w', $html, '960w must be rendered');
 
         // 1260 is bigger than the defined 1200 max width, therefore it must not be rendered
-        static::assertFalse(strpos($html, '1260w'), '1260w must not be rendered');
+        static::assertNotContains('1260w', $html, '1260w must not be rendered');
         unset($html);
 
         // ---------------------------------------------------------------------------------------------------------------------
 
         $html = $imageRenderer->render($this->file, 1600, 1600);
 
-        static::assertNotFalse(strpos($html, '320w'), '320w must be rendered');
-        static::assertNotFalse(strpos($html, '640w'), '640w must be rendered');
-        static::assertNotFalse(strpos($html, '720w'), '720w must be rendered');
-        static::assertNotFalse(strpos($html, '960w'), '960w must be rendered');
+        static::assertContains('320w', $html, '320w must be rendered');
+        static::assertContains('640w', $html, '640w must be rendered');
+        static::assertContains('720w', $html, '720w must be rendered');
+        static::assertContains('960w', $html, '960w must be rendered');
 
         // 1260 is smaller than the defined 1600 max width, therefore it must not be rendered
-        static::assertNotFalse(strpos($html, '1260w'), '1260w must be rendered');
+        static::assertContains('1260w', $html, '1260w must be rendered');
     }
 
     public function testRenderingWithCropVariantCollectionConfiguration()
@@ -231,8 +231,8 @@ class ImageRendererTest extends FunctionalTestCase
             $fileReference->getProperty('height') // 1200
         );
 
-        static::assertNotFalse(strpos($html, 'width="3200"'), 'width="3200" must be rendered');
-        static::assertNotFalse(strpos($html, 'height="1200"'), 'height="1200" must be rendered');
+        static::assertContains('width="3200"', $html, 'width="3200" must be rendered');
+        static::assertContains('height="1200"', $html, 'height="1200" must be rendered');
 
         // ---------------------------------------------------------------------------------------------------------------------
 
@@ -244,8 +244,8 @@ class ImageRendererTest extends FunctionalTestCase
             1200
         );
 
-        static::assertNotFalse(strpos($html, 'width="1600"'), 'width="1600" must be rendered');
-        static::assertNotFalse(strpos($html, 'height="600"'), 'height="600" must be rendered');
+        static::assertContains('width="1600"', $html, 'width="1600" must be rendered');
+        static::assertContains('height="600"', $html, 'height="600" must be rendered');
     }
 
     public function testRenderingWithSrcSetAndCropVariantCollectionConfiguration()
@@ -294,10 +294,10 @@ class ImageRendererTest extends FunctionalTestCase
             $fileReference->getProperty('height') // 1200
         );
 
-        static::assertNotFalse(strpos($html, '320w'), '320w must be rendered');
-        static::assertNotFalse(strpos($html, '640w'), '640w must be rendered');
-        static::assertNotFalse(strpos($html, '720w'), '720w must be rendered');
-        static::assertNotFalse(strpos($html, '960w'), '960w must be rendered');
-        static::assertNotFalse(strpos($html, '1260w'), '1260w must be rendered');
+        static::assertContains('320w', $html, '320w must be rendered');
+        static::assertContains('640w', $html, '640w must be rendered');
+        static::assertContains('720w', $html, '720w must be rendered');
+        static::assertContains('960w', $html, '960w must be rendered');
+        static::assertContains('1260w', $html, '1260w must be rendered');
     }
 }

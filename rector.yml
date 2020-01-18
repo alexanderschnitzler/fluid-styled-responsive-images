@@ -16,3 +16,4 @@ parameters:
     - 'phpunit-exception'
     - 'phpunit-injector'
     - 'phpunit-mock'
+    - 'phpunit-specific-method'
