@@ -9,3 +9,4 @@
 /unit-tests.sh
 /composer.json
 /.phplint-cache
+/.phpunit.result.cache
