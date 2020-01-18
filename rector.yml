@@ -12,3 +12,4 @@ parameters:
     - 'php70'
     - 'php71'
     - 'php72'
+    - 'phpunit-code-quality'

@@ -13,6 +13,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 /**
  * Class ImageRenderer
  * @package Schnitzler\FluidStyledResponsiveImages\Resource\Rendering
+ * @see \Schnitzler\FluidStyledResponsiveImages\Tests\Functional\Resource\Rendering\ImageRendererTest
  */
 class ImageRenderer implements FileRendererInterface
 {

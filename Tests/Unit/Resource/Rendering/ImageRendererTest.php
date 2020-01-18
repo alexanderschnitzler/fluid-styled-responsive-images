@@ -51,7 +51,6 @@ class ImageRendererTest extends UnitTestCase
         );
 
         $this->file
-            ->expects($this->any())
             ->method('getProperty')
             ->will($this->returnCallback(function ($in) {
                 switch ($in) {
@@ -72,12 +71,10 @@ class ImageRendererTest extends UnitTestCase
             ->getMock();
 
         $this->imageRendererConfiguration
-            ->expects($this->any())
             ->method('getAbsRefPrefix')
             ->will($this->returnValue(''));
 
         $this->imageRendererConfiguration
-            ->expects($this->any())
             ->method('getGenericTagAttributes')
             ->will($this->returnValue([]));
 
@@ -86,7 +83,6 @@ class ImageRendererTest extends UnitTestCase
             ->getMock();
 
         $this->imageRenderer
-            ->expects($this->any())
             ->method('getConfiguration')
             ->will($this->returnValue($this->imageRendererConfiguration));
     }
@@ -102,12 +98,10 @@ class ImageRendererTest extends UnitTestCase
             ->getMock();
 
         $processedFile
-            ->expects($this->any())
             ->method('getPublicUrl')
             ->will($this->returnValue('image.jpg'));
 
         $processedFile
-            ->expects($this->any())
             ->method('getProperty')
             ->will($this->returnValue(100));
 
@@ -119,7 +113,6 @@ class ImageRendererTest extends UnitTestCase
             ->getMock();
 
         $processedFile
-            ->expects($this->any())
             ->method('getPublicUrl')
             ->will($this->returnValue('image360.jpg'));
 
@@ -131,7 +124,6 @@ class ImageRendererTest extends UnitTestCase
             ->getMock();
 
         $processedFile
-            ->expects($this->any())
             ->method('getPublicUrl')
             ->will($this->returnValue('image720.jpg'));
 
