@@ -1,0 +1,14 @@
+parameters:
+  php_version_features: '7.2'
+  auto_import_names: false
+  paths:
+    - 'Classes/'
+    - 'Tests/'
+  sets:
+    - 'php53'
+    - 'php54'
+    - 'php55'
+    - 'php56'
+    - 'php70'
+    - 'php71'
+    - 'php72'
