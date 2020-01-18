@@ -12,7 +12,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class ImageRendererTest
- * @package Schnitzler\FluidStyledResponsiveImages\Resource\Rendering
  */
 class ImageRendererTest extends UnitTestCase
 {
@@ -37,9 +36,6 @@ class ImageRendererTest extends UnitTestCase
      */
     protected $processedFiles = [];
 
-    /**
-     * @return void
-     */
     public function setUp(): void
     {
         parent::setUp();
@@ -91,9 +87,6 @@ class ImageRendererTest extends UnitTestCase
             ->willReturn($this->imageRendererConfiguration);
     }
 
-    /**
-     * @return void
-     */
     public function setUpProcessedFiles(): void
     {
         $processedFile = $this->getMockBuilder(ProcessedFile::class)
@@ -134,9 +127,6 @@ class ImageRendererTest extends UnitTestCase
         $this->processedFiles[2] = $processedFile;
     }
 
-    /**
-     * @return void
-     */
     public function testWithSrcSetAndWithoutSourceCollection(): void
     {
         $this->file
@@ -168,9 +158,6 @@ class ImageRendererTest extends UnitTestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testWithSrcSetAndSourceCollection(): void
     {
         $this->file
@@ -219,9 +206,6 @@ class ImageRendererTest extends UnitTestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testWithDataAndWithoutSourceCollection(): void
     {
         $this->file
@@ -250,9 +234,6 @@ class ImageRendererTest extends UnitTestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testWithDataAndSourceCollection(): void
     {
         $this->file
@@ -299,5 +280,4 @@ class ImageRendererTest extends UnitTestCase
             )
         );
     }
-
 }

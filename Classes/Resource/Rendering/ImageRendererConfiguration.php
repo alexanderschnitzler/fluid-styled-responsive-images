@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Schnitzler\FluidStyledResponsiveImages\Resource\Rendering;
 
-use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
@@ -11,7 +10,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class ImageRendererConfiguration
- * @package Schnitzler\FluidStyledResponsiveImages\Resource\Rendering
  */
 class ImageRendererConfiguration
 {

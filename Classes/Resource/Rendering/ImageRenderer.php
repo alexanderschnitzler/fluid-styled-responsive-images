@@ -14,7 +14,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
 /**
  * Class ImageRenderer
- * @package Schnitzler\FluidStyledResponsiveImages\Resource\Rendering
  * @see \Schnitzler\FluidStyledResponsiveImages\Tests\Functional\Resource\Rendering\ImageRendererTest
  */
 class ImageRenderer implements FileRendererInterface
@@ -22,12 +21,12 @@ class ImageRenderer implements FileRendererInterface
     /**
      * @var TagBuilder
      */
-    static protected $tagBuilder;
+    protected static $tagBuilder;
 
     /**
      * @var ImageRendererConfiguration
      */
-    static protected $configuration;
+    protected static $configuration;
 
     /**
      * @var array<string>
@@ -163,9 +162,6 @@ class ImageRenderer implements FileRendererInterface
         return $this->buildImageTag((string)$processedFile->getPublicUrl(), $file, $width, $height, $options);
     }
 
-    /**
-     * @return void
-     */
     protected function reset(): void
     {
         $this->sizes = [];

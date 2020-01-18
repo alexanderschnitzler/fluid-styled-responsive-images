@@ -42,9 +42,6 @@ class ImageRendererTest extends FunctionalTestCase
      */
     protected $file;
 
-    /**
-     * @return void
-     */
     public function setUp(): void
     {
         $this->configurationToUseInTestInstance['GFX']['processor'] = getenv('PROCESSOR') ?? 'ImageMagick';

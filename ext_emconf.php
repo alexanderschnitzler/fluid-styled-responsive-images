@@ -1,6 +1,5 @@
 <?php
 /** @var string $_EXTKEY */
-
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Fluid Styled Responsive Images',
     'description' => 'Enables creation of responsive images for fluid styled content elements.',

@@ -40,6 +40,7 @@
         "phpstan/phpstan": "^0.12.5",
         "saschaegerer/phpstan-typo3": "^0.12.0",
         "phpstan/phpstan-phpunit": "^0.12.6",
-        "phpstan/phpstan-deprecation-rules": "^0.12.2"
+        "phpstan/phpstan-deprecation-rules": "^0.12.2",
+        "friendsofphp/php-cs-fixer": "^2.16"
     }
 }
