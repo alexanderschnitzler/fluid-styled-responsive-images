@@ -1,6 +1,8 @@
 parameters:
   php_version_features: '7.2'
-  auto_import_names: false
+  auto_import_names: true
+  import_short_classes: false
+  import_doc_blocks: false
   paths:
     - 'Classes/'
     - 'Tests/'
@@ -17,3 +19,4 @@ parameters:
     - 'phpunit-injector'
     - 'phpunit-mock'
     - 'phpunit-specific-method'
+    - 'type-declaration'

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Schnitzler\FluidStyledResponsiveImages\Tests\Functional\Resource\Rendering;
 
@@ -83,7 +84,7 @@ class ImageRendererTest extends FunctionalTestCase
         $this->file = $fileReposistory->findByUid(1);
     }
 
-    protected function setUpTSFE()
+    protected function setUpTSFE(): void
     {
         $GLOBALS['TT'] = new TimeTracker(false);
         $GLOBALS['TYPO3_REQUEST'] = new ServerRequest(
@@ -106,7 +107,7 @@ class ImageRendererTest extends FunctionalTestCase
         $GLOBALS['TSFE'] = $TSFE;
     }
 
-    public function testSetupWorksCorrectly()
+    public function testSetupWorksCorrectly(): void
     {
         static::assertInstanceOf(File::class, $this->file);
         static::assertSame('beb5e4faa5ada0f57407976ca75e8719e7dbf02d', $this->file->getSha1());
@@ -118,7 +119,7 @@ class ImageRendererTest extends FunctionalTestCase
         static::assertSame($expectedDefaultCropArea, $actualDefaultCropArea);
     }
 
-    public function testEnableSmallDefaultImageRendersSmallDefaultImage()
+    public function testEnableSmallDefaultImageRendersSmallDefaultImage(): void
     {
         $configuration = ['enableSmallDefaultImage' => true];
         $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['fluid_styled_responsive_images'] = serialize($configuration);
@@ -137,7 +138,7 @@ class ImageRendererTest extends FunctionalTestCase
         static::assertContains('height="135"', $html, 'Rendered height was not 135');
     }
 
-    public function testDisableSmallDefaultImageRendersOriginalImage()
+    public function testDisableSmallDefaultImageRendersOriginalImage(): void
     {
         $configuration = ['enableSmallDefaultImage' => false];
         $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['fluid_styled_responsive_images'] = serialize($configuration);
@@ -156,7 +157,7 @@ class ImageRendererTest extends FunctionalTestCase
         static::assertContains('height="450"', $html, 'Rendered height was not 450');
     }
 
-    public function testRenderingWithSrcSetConfiguration()
+    public function testRenderingWithSrcSetConfiguration(): void
     {
         parent::setUpFrontendRootPage(
             1,
@@ -200,7 +201,7 @@ class ImageRendererTest extends FunctionalTestCase
         static::assertContains('1260w', $html, '1260w must be rendered');
     }
 
-    public function testRenderingWithCropVariantCollectionConfiguration()
+    public function testRenderingWithCropVariantCollectionConfiguration(): void
     {
         /** @var FileRepository $repository */
         $repository = GeneralUtility::makeInstance(FileRepository::class);
@@ -248,7 +249,7 @@ class ImageRendererTest extends FunctionalTestCase
         static::assertContains('height="600"', $html, 'height="600" must be rendered');
     }
 
-    public function testRenderingWithSrcSetAndCropVariantCollectionConfiguration()
+    public function testRenderingWithSrcSetAndCropVariantCollectionConfiguration(): void
     {
         parent::setUpFrontendRootPage(
             1,

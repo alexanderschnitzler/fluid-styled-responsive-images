@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Schnitzler\FluidStyledResponsiveImages\Resource\Rendering;
 
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
@@ -65,7 +67,7 @@ class ImageRenderer implements FileRendererInterface
     /**
      * @return ImageRendererConfiguration
      */
-    protected function getConfiguration()
+    protected function getConfiguration(): ImageRendererConfiguration
     {
         if (!static::$configuration instanceof ImageRendererConfiguration) {
             static::$configuration = GeneralUtility::makeInstance(ImageRendererConfiguration::class);
@@ -77,7 +79,7 @@ class ImageRenderer implements FileRendererInterface
     /**
      * @return TagBuilder
      */
-    protected function getTagBuilder()
+    protected function getTagBuilder(): TagBuilder
     {
         if (!static::$tagBuilder instanceof TagBuilder) {
             static::$tagBuilder = GeneralUtility::makeInstance(TagBuilder::class);
@@ -89,7 +91,7 @@ class ImageRenderer implements FileRendererInterface
     /**
      * @return int
      */
-    public function getPriority()
+    public function getPriority(): int
     {
         return 5;
     }
@@ -98,7 +100,7 @@ class ImageRenderer implements FileRendererInterface
      * @param FileInterface $file
      * @return bool
      */
-    public function canRender(FileInterface $file)
+    public function canRender(FileInterface $file): bool
     {
         return TYPO3_MODE === 'FE' && in_array($file->getMimeType(), $this->possibleMimeTypes, true);
     }
@@ -117,11 +119,11 @@ class ImageRenderer implements FileRendererInterface
         $height,
         array $options = [],
         $usedPathsRelativeToCurrentScript = false
-    ) {
+    ): string {
         $this->reset();
 
-        $this->defaultWidth = $width;
-        $this->defaultHeight = $height;
+        $this->defaultWidth = (string)$width;
+        $this->defaultHeight = (string)$height;
 
         if (is_callable([$file, 'getOriginalFile'])) {
             /** @var FileReference $file */
@@ -154,16 +156,16 @@ class ImageRenderer implements FileRendererInterface
             $defaultProcessConfiguration
         );
 
-        $width = $processedFile->getProperty('width');
-        $height = $processedFile->getProperty('height');
+        $width = (int)$processedFile->getProperty('width');
+        $height = (int)$processedFile->getProperty('height');
 
-        return $this->buildImageTag($processedFile->getPublicUrl(), $file, $width, $height, $options);
+        return $this->buildImageTag((string)$processedFile->getPublicUrl(), $file, $width, $height, $options);
     }
 
     /**
      * @return void
      */
-    protected function reset()
+    protected function reset(): void
     {
         $this->sizes = [];
         $this->srcset = [];
@@ -174,7 +176,7 @@ class ImageRenderer implements FileRendererInterface
      * @param File $originalFile
      * @param array $defaultProcessConfiguration
      */
-    protected function processSourceCollection(File $originalFile, array $defaultProcessConfiguration)
+    protected function processSourceCollection(File $originalFile, array $defaultProcessConfiguration): void
     {
         $configuration = $this->getConfiguration();
 
@@ -219,7 +221,7 @@ class ImageRenderer implements FileRendererInterface
      *
      * @return string
      */
-    protected function buildImageTag($src, FileInterface $file, $width, $height, array $options)
+    protected function buildImageTag(string $src, FileInterface $file, int $width, int $height, array $options): string
     {
         $tagBuilder = $this->getTagBuilder();
         $configuration = $this->getConfiguration();
@@ -270,8 +272,8 @@ class ImageRenderer implements FileRendererInterface
                 break;
             default:
                 $tagBuilder->addAttributes([
-                    'width' => (int)$width,
-                    'height' => (int)$height,
+                    'width' => $width,
+                    'height' => $height,
                 ]);
                 break;
         }

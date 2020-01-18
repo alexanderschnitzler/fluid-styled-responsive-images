@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Schnitzler\FluidStyledResponsiveImages\Tests\Unit\Resource\Rendering;
 
 use Schnitzler\FluidStyledResponsiveImages\Resource\Rendering\ImageRenderer;
@@ -52,7 +54,7 @@ class ImageRendererTest extends UnitTestCase
 
         $this->file
             ->method('getProperty')
-            ->willReturnCallback(function ($in) {
+            ->willReturnCallback(function ($in): string {
                 switch ($in) {
                     case 'title':
                         return 'title';
@@ -90,7 +92,7 @@ class ImageRendererTest extends UnitTestCase
     /**
      * @return void
      */
-    public function setUpProcessedFiles()
+    public function setUpProcessedFiles(): void
     {
         $processedFile = $this->getMockBuilder(ProcessedFile::class)
             ->setMethods(['getPublicUrl', 'getProperty'])
@@ -133,7 +135,7 @@ class ImageRendererTest extends UnitTestCase
     /**
      * @return void
      */
-    public function testWithSrcSetAndWithoutSourceCollection()
+    public function testWithSrcSetAndWithoutSourceCollection(): void
     {
         $this->file
             ->expects($this->at(1))
@@ -167,7 +169,7 @@ class ImageRendererTest extends UnitTestCase
     /**
      * @return void
      */
-    public function testWithSrcSetAndSourceCollection()
+    public function testWithSrcSetAndSourceCollection(): void
     {
         $this->file
             ->expects($this->at(1))
@@ -218,7 +220,7 @@ class ImageRendererTest extends UnitTestCase
     /**
      * @return void
      */
-    public function testWithDataAndWithoutSourceCollection()
+    public function testWithDataAndWithoutSourceCollection(): void
     {
         $this->file
             ->expects($this->at(1))
@@ -249,7 +251,7 @@ class ImageRendererTest extends UnitTestCase
     /**
      * @return void
      */
-    public function testWithDataAndSourceCollection()
+    public function testWithDataAndSourceCollection(): void
     {
         $this->file
             ->expects($this->at(1))

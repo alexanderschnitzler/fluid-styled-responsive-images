@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Schnitzler\FluidStyledResponsiveImages\Resource\Rendering;
 
 use TYPO3\CMS\Core\TypoScript\TemplateService;
@@ -43,9 +45,6 @@ class ImageRendererConfiguration
         'onclick',
     ];
 
-    /**
-     * @return ImageRendererConfiguration
-     */
     public function __construct()
     {
         if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['fluid_styled_responsive_images'])) {
@@ -59,13 +58,18 @@ class ImageRendererConfiguration
                 ];
             }
 
-            $this->extensionConfiguration = filter_var_array(
+            $extensionConfiguration = filter_var_array(
                 $extensionConfiguration,
                 [
                     'enableSmallDefaultImage' => FILTER_VALIDATE_BOOLEAN
                 ],
                 false
             );
+
+            $this->extensionConfiguration = is_array($extensionConfiguration)
+                ? (array)$extensionConfiguration
+                : []
+            ;
         }
 
         $this->settings = [];
@@ -80,8 +84,7 @@ class ImageRendererConfiguration
         );
         $settings = is_array($settings) ? $settings : [];
 
-        $this->settings['layoutKey'] =
-            $settings['layoutKey'] ?? 'default';
+        $this->settings['layoutKey'] = $settings['layoutKey'] ?? 'default';
 
         $this->settings['sourceCollection'] =
             (isset($settings['sourceCollection']) && is_array($settings['sourceCollection']))
@@ -92,7 +95,7 @@ class ImageRendererConfiguration
     /**
      * @return string
      */
-    public function getAbsRefPrefix()
+    public function getAbsRefPrefix(): string
     {
         $asbRefPrefix = '';
         if ($this->getTypoScriptFrontendController() instanceof TypoScriptFrontendController) {
@@ -105,23 +108,24 @@ class ImageRendererConfiguration
     /**
      * @return string
      */
-    public function getLayoutKey()
+    public function getLayoutKey(): string
     {
-        return $this->settings['layoutKey'];
+        return (string)$this->settings['layoutKey'];
     }
 
     /**
      * @return array
      */
-    public function getSourceCollection()
+    public function getSourceCollection(): array
     {
-        return $this->settings['sourceCollection'];
+        $sourceCollection = $this->settings['sourceCollection'];
+        return is_array($sourceCollection) ? $sourceCollection : [];
     }
 
     /**
      * @return array
      */
-    protected function getTypoScriptSetup()
+    protected function getTypoScriptSetup(): array
     {
         if (!$this->getTypoScriptFrontendController() instanceof TypoScriptFrontendController) {
             return [];
@@ -137,7 +141,7 @@ class ImageRendererConfiguration
     /**
      * @return array
      */
-    public function getGenericTagAttributes()
+    public function getGenericTagAttributes(): array
     {
         return $this->genericTagAttributes;
     }
@@ -145,7 +149,7 @@ class ImageRendererConfiguration
     /**
      * @return array
      */
-    public function getExtensionConfiguration()
+    public function getExtensionConfiguration(): array
     {
         return $this->extensionConfiguration;
     }
@@ -153,7 +157,7 @@ class ImageRendererConfiguration
     /**
      * @return TypoScriptFrontendController
      */
-    protected function getTypoScriptFrontendController()
+    protected function getTypoScriptFrontendController(): TypoScriptFrontendController
     {
         return $GLOBALS['TSFE'];
     }
