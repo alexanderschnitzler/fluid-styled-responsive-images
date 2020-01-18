@@ -227,7 +227,7 @@ class ImageRenderer implements FileRendererInterface
         $tagBuilder->setTagName('img');
 
         try {
-            $alt = trim($file->getProperty('alternative'));
+            $alt = trim((string)$file->getProperty('alternative'));
 
             if ($alt === '') {
                 throw new \LogicException;
@@ -237,7 +237,7 @@ class ImageRenderer implements FileRendererInterface
         }
 
         try {
-            $title = trim($file->getProperty('title'));
+            $title = trim((string)$file->getProperty('title'));
 
             if ($title === '') {
                 throw new \LogicException;

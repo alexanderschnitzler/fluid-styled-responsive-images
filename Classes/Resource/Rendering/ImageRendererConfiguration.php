@@ -16,7 +16,7 @@ class ImageRendererConfiguration
     /**
      * @var array<string,mixed>
      */
-    protected $extensionConfiguration;
+    protected $extensionConfiguration = [];
 
     /**
      * @var TypoScriptService
@@ -26,7 +26,7 @@ class ImageRendererConfiguration
     /**
      * @var array<string,mixed>
      */
-    protected $settings;
+    protected $settings = [];
 
     /**
      * @var array<string>
