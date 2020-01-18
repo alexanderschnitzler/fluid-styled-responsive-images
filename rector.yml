@@ -13,3 +13,6 @@ parameters:
     - 'php71'
     - 'php72'
     - 'phpunit-code-quality'
+    - 'phpunit-exception'
+    - 'phpunit-injector'
+    - 'phpunit-mock'

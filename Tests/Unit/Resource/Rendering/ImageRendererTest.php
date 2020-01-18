@@ -52,7 +52,7 @@ class ImageRendererTest extends UnitTestCase
 
         $this->file
             ->method('getProperty')
-            ->will($this->returnCallback(function ($in) {
+            ->willReturnCallback(function ($in) {
                 switch ($in) {
                     case 'title':
                         return 'title';
@@ -64,7 +64,7 @@ class ImageRendererTest extends UnitTestCase
                         return '';
                         break;
                 }
-            }));
+            });
 
         $this->imageRendererConfiguration = $this->getMockBuilder(ImageRendererConfiguration::class)
             ->disableOriginalConstructor()
@@ -72,11 +72,11 @@ class ImageRendererTest extends UnitTestCase
 
         $this->imageRendererConfiguration
             ->method('getAbsRefPrefix')
-            ->will($this->returnValue(''));
+            ->willReturn('');
 
         $this->imageRendererConfiguration
             ->method('getGenericTagAttributes')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $this->imageRenderer = $this->getMockBuilder(ImageRenderer::class)
             ->setMethods(['getConfiguration'])
@@ -84,7 +84,7 @@ class ImageRendererTest extends UnitTestCase
 
         $this->imageRenderer
             ->method('getConfiguration')
-            ->will($this->returnValue($this->imageRendererConfiguration));
+            ->willReturn($this->imageRendererConfiguration);
     }
 
     /**
@@ -99,11 +99,11 @@ class ImageRendererTest extends UnitTestCase
 
         $processedFile
             ->method('getPublicUrl')
-            ->will($this->returnValue('image.jpg'));
+            ->willReturn('image.jpg');
 
         $processedFile
             ->method('getProperty')
-            ->will($this->returnValue(100));
+            ->willReturn(100);
 
         $this->processedFiles[0] = $processedFile;
 
@@ -114,7 +114,7 @@ class ImageRendererTest extends UnitTestCase
 
         $processedFile
             ->method('getPublicUrl')
-            ->will($this->returnValue('image360.jpg'));
+            ->willReturn('image360.jpg');
 
         $this->processedFiles[1] = $processedFile;
 
@@ -125,7 +125,7 @@ class ImageRendererTest extends UnitTestCase
 
         $processedFile
             ->method('getPublicUrl')
-            ->will($this->returnValue('image720.jpg'));
+            ->willReturn('image720.jpg');
 
         $this->processedFiles[2] = $processedFile;
     }
