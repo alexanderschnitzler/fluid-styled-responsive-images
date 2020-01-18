@@ -81,9 +81,7 @@ class ImageRendererConfiguration
         $settings = is_array($settings) ? $settings : [];
 
         $this->settings['layoutKey'] =
-            (isset($settings['layoutKey']))
-                ? $settings['layoutKey']
-                : 'default';
+            $settings['layoutKey'] ?? 'default';
 
         $this->settings['sourceCollection'] =
             (isset($settings['sourceCollection']) && is_array($settings['sourceCollection']))
