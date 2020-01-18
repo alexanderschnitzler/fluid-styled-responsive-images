@@ -11,25 +11,7 @@ parameters:
     - %currentWorkingDirectory%/Classes/
     - %currentWorkingDirectory%/Tests/
 
-#  excludes_analyse:
-#    - %currentWorkingDirectory%/typo3/sysext/*/Tests/*
-#    - %currentWorkingDirectory%/typo3/sysext/*/Documentation/*
-#    - %currentWorkingDirectory%/typo3/sysext/*/Resources/*
-#    - %currentWorkingDirectory%/typo3/sysext/*/Configuration/*
-
   ignoreErrors:
     - '#Constant TYPO3_MODE not found\.#'
     - '#Constant ORIGINAL_ROOT not found\.#'
     - '#Constant PATH_site not found\.#'
-#    -
-#      message: '#Instantiated class Composer\\Util\\Filesystem not found\.#'
-#      path: %currentWorkingDirectory%/typo3/sysext/core/Classes/Composer/CliEntryPoint.php
-#    -
-#      message: '#Parameter \$event of method [\w\\]+::\w+\(\) has invalid typehint type Composer\\Script\\Event\.#'
-#      path: %currentWorkingDirectory%/typo3/sysext/*/Classes/Composer/*
-#    -
-#      message: '#Access to undefined constant PDO::PGSQL_.+#'
-#      path: %currentWorkingDirectory%/typo3/sysext/core/Classes/Database/Driver/PDOPgSql/Driver.php
-#    -
-#      message: '#Access to undefined constant PDO::SQLSRV_.+#'
-#      path: %currentWorkingDirectory%/typo3/sysext/core/Classes/Database/Driver/PDOSqlsrv/Statement.php
