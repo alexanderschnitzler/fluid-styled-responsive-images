@@ -10,7 +10,7 @@
 
 This project aims to provide an image-rendering process that will render
 responsive images with fluid, where the assumption is made, that TYPO3 CMS
-doesn't provide a mechanism outof the box for *fluid templates* while one
+doesn't provide a mechanism out of the box for *fluid templates* while one
 is able to do it with TypoScript.
 
 * [Installation](#installation)
@@ -24,10 +24,9 @@ is able to do it with TypoScript.
 
 ## Installation
 
-a) install the stable version from the [TYPO3 CMS Extension Repository (TER)](https://typo3.org/extensions/repository/view/fluid_styled_responsive_images) through the extension manager
-b) install via composer using the current stable release and track new stable releases: `composer require "typo3-ter/fluid-styled-responsive-images ^1.2"` and enable the extension through the extension manager / your preferred mechanism
-c) use the current development version by either requiring `"typo3-ter/fluid-styled-responsive-images": "dev-master"` in your `composer.json` file, run `composer update`
-d) clone the current development version to your `typo3conf/ext` directory (ex. `cd typo3conf/ext && rm -Rf fluid_styled_responsive_images && git clone https://github.com/alexanderschnitzler/fluid-styled-responsive-images.git fluid_styled_responsive_images`)
+* Install via composer using the current stable release and track new stable releases: `composer require schnitzler/fluid-styled-responsive-images:"^10.2"` and enable the extension through the extension manager / your preferred mechanism
+* Use the current development version by running `composer require schnitzler/fluid-styled-responsive-images:"dev-master"` in your `composer.json` file, run `composer update`
+* Clone the current development version to your `typo3conf/ext` directory (ex. `cd typo3conf/ext && rm -Rf fluid_styled_responsive_images && git clone https://github.com/alexanderschnitzler/fluid-styled-responsive-images.git fluid_styled_responsive_images`)
 
 ## Configuration
 
