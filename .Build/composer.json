@@ -19,8 +19,8 @@
         ]
     },
     "require": {
-        "typo3/minimal": "^10.2",
-        "typo3/cms-workspaces": "^10.2"
+        "typo3/minimal": "^10.4",
+        "typo3/cms-workspaces": "^10.4"
     },
     "require-dev": {
         "typo3/testing-framework": "^6",
