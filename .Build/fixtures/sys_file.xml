@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <sys_file>
+        <uid>1</uid>
+        <pid>1</pid>
+        <tstamp>1603719103</tstamp>
+        <last_indexed>0</last_indexed>
+        <missing>0</missing>
+        <storage>1</storage>
+        <type>2</type>
+        <metadata>0</metadata>
+        <identifier>/guernica.jpg</identifier>
+        <identifier_hash>aa1fdc3290df0c6545e304e873b4a522bb3bb4b4</identifier_hash>
+        <folder_hash>42099b4af021e53fd8fd4e056c2568d7c2e3ffa8</folder_hash>
+        <extension>jpg</extension>
+        <mime_type>image/jpeg</mime_type>
+        <name>guernica.jpg</name>
+        <sha1>beb5e4faa5ada0f57407976ca75e8719e7dbf02d</sha1>
+        <size>739459</size>
+        <creation_date>1603719103</creation_date>
+        <modification_date>1603719103</modification_date>
+    </sys_file>
+</dataset>

@@ -7,6 +7,7 @@ use Psr\Log\NullLogger;
 use Schnitzler\FluidStyledResponsiveImages\Resource\Rendering\ImageRenderer;
 use Schnitzler\FluidStyledResponsiveImages\Resource\Rendering\ImageRendererConfiguration;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Http\Uri;
@@ -15,9 +16,10 @@ use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\Index\FileIndexRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Routing\PageArguments;
-use TYPO3\CMS\Core\Site\Entity\NullSite;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -55,14 +57,14 @@ class ImageRendererTest extends FunctionalTestCase
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
 
         $fixtureRootPath = ORIGINAL_ROOT . 'typo3conf/ext/fluid_styled_responsive_images/.Build/fixtures/';
-        foreach (['pages', 'sys_file_reference'] as $table) {
+        foreach (['pages', 'sys_file', 'sys_file_reference', 'sys_file_metadata'] as $table) {
             $connectionPool->getConnectionForTable($table)->truncate($table);
             $this->importDataSet($fixtureRootPath . $table . '.xml');
         }
 
         // Clean up processed files
         $connectionPool->getConnectionForTable('sys_file_processedfile')->truncate('sys_file_processedfile');
-        $files = glob(PATH_site . 'fileadmin/_processed_/*');
+        $files = glob(Environment::getPublicPath() . '/fileadmin/_processed_/*');
         $files = is_array($files) ? $files : [];
         foreach ($files as $file) {
             if (is_dir($file)) {
@@ -70,13 +72,10 @@ class ImageRendererTest extends FunctionalTestCase
             }
         }
 
-        /** @var Folder $folder */
-        $folder = ResourceFactory::getInstance()->retrieveFileOrFolderObject('1:/');
-        $file = $folder->createFile('guernica.jpg');
-        $contents = file_get_contents(ORIGINAL_ROOT . 'typo3conf/ext/fluid_styled_responsive_images/.Build/fixtures/guernica.jpg');
-        if (is_string($contents)) {
-            $file->setContents($contents);
-        }
+        copy(
+            ORIGINAL_ROOT . 'typo3conf/ext/fluid_styled_responsive_images/.Build/fixtures/guernica.jpg',
+            $this->instancePath . '/fileadmin/guernica.jpg'
+        );
 
         /** @var FileRepository $fileReposistory */
         $fileReposistory = GeneralUtility::makeInstance(FileRepository::class);
@@ -90,7 +89,7 @@ class ImageRendererTest extends FunctionalTestCase
             new Uri('')
         );
 
-        $site = new NullSite();
+        $site = new Site('default', 1, []);
         /** @var TypoScriptFrontendController $TSFE */
         $TSFE = new TypoScriptFrontendController(
             GeneralUtility::makeInstance(Context::class),
@@ -100,7 +99,7 @@ class ImageRendererTest extends FunctionalTestCase
         );
         $TSFE->setLogger(new NullLogger());
         $TSFE->sys_page = GeneralUtility::makeInstance(PageRepository::class);
-        $TSFE->getPageAndRootlineWithDomain(1);
+        $TSFE->getPageAndRootlineWithDomain(1, $GLOBALS['TYPO3_REQUEST']);
         $TSFE->getConfigArray();
 
         $GLOBALS['TSFE'] = $TSFE;
@@ -132,8 +131,8 @@ class ImageRendererTest extends FunctionalTestCase
 
         // If no rendering mode is enabled, width and height should be set
         // to the width and height of the processed image
-        self::assertContains('width="360"', $html);
-        self::assertContains('height="135"', $html, 'Rendered height was not 135');
+        self::assertStringContainsString('width="360"', $html);
+        self::assertStringContainsString('height="135"', $html, 'Rendered height was not 135');
     }
 
     public function testDisableSmallDefaultImageRendersOriginalImage(): void
@@ -151,8 +150,8 @@ class ImageRendererTest extends FunctionalTestCase
 
         // If no rendering mode is enabled, width and height should be set
         // to the width and height of the original image
-        self::assertContains('width="1200"', $html, 'Rendered width was not 1200');
-        self::assertContains('height="450"', $html, 'Rendered height was not 450');
+        self::assertStringContainsString('width="1200"', $html, 'Rendered width was not 1200');
+        self::assertStringContainsString('height="450"', $html, 'Rendered height was not 450');
     }
 
     public function testRenderingWithSrcSetConfiguration(): void
@@ -177,26 +176,26 @@ class ImageRendererTest extends FunctionalTestCase
 
         $html = $imageRenderer->render($this->file, 1200, 1200);
 
-        self::assertContains('320w', $html, '320w must be rendered');
-        self::assertContains('640w', $html, '640w must be rendered');
-        self::assertContains('720w', $html, '720w must be rendered');
-        self::assertContains('960w', $html, '960w must be rendered');
+        self::assertStringContainsString('320w', $html, '320w must be rendered');
+        self::assertStringContainsString('640w', $html, '640w must be rendered');
+        self::assertStringContainsString('720w', $html, '720w must be rendered');
+        self::assertStringContainsString('960w', $html, '960w must be rendered');
 
         // 1260 is bigger than the defined 1200 max width, therefore it must not be rendered
-        self::assertNotContains('1260w', $html, '1260w must not be rendered');
+        self::assertStringNotContainsString('1260w', $html, '1260w must not be rendered');
         unset($html);
 
         // ---------------------------------------------------------------------------------------------------------------------
 
         $html = $imageRenderer->render($this->file, 1600, 1600);
 
-        self::assertContains('320w', $html, '320w must be rendered');
-        self::assertContains('640w', $html, '640w must be rendered');
-        self::assertContains('720w', $html, '720w must be rendered');
-        self::assertContains('960w', $html, '960w must be rendered');
+        self::assertStringContainsString('320w', $html, '320w must be rendered');
+        self::assertStringContainsString('640w', $html, '640w must be rendered');
+        self::assertStringContainsString('720w', $html, '720w must be rendered');
+        self::assertStringContainsString('960w', $html, '960w must be rendered');
 
         // 1260 is smaller than the defined 1600 max width, therefore it must not be rendered
-        self::assertContains('1260w', $html, '1260w must be rendered');
+        self::assertStringContainsString('1260w', $html, '1260w must be rendered');
     }
 
     public function testRenderingWithCropVariantCollectionConfiguration(): void
@@ -229,8 +228,8 @@ class ImageRendererTest extends FunctionalTestCase
             $fileReference->getProperty('height') // 1200
         );
 
-        self::assertContains('width="3200"', $html, 'width="3200" must be rendered');
-        self::assertContains('height="1200"', $html, 'height="1200" must be rendered');
+        self::assertStringContainsString('width="3200"', $html, 'width="3200" must be rendered');
+        self::assertStringContainsString('height="1200"', $html, 'height="1200" must be rendered');
 
         // ---------------------------------------------------------------------------------------------------------------------
 
@@ -242,8 +241,8 @@ class ImageRendererTest extends FunctionalTestCase
             1200
         );
 
-        self::assertContains('width="1600"', $html, 'width="1600" must be rendered');
-        self::assertContains('height="600"', $html, 'height="600" must be rendered');
+        self::assertStringContainsString('width="1600"', $html, 'width="1600" must be rendered');
+        self::assertStringContainsString('height="600"', $html, 'height="600" must be rendered');
     }
 
     public function testRenderingWithSrcSetAndCropVariantCollectionConfiguration(): void
@@ -291,10 +290,10 @@ class ImageRendererTest extends FunctionalTestCase
             $fileReference->getProperty('height') // 1200
         );
 
-        self::assertContains('320w', $html, '320w must be rendered');
-        self::assertContains('640w', $html, '640w must be rendered');
-        self::assertContains('720w', $html, '720w must be rendered');
-        self::assertContains('960w', $html, '960w must be rendered');
-        self::assertContains('1260w', $html, '1260w must be rendered');
+        self::assertStringContainsString('320w', $html, '320w must be rendered');
+        self::assertStringContainsString('640w', $html, '640w must be rendered');
+        self::assertStringContainsString('720w', $html, '720w must be rendered');
+        self::assertStringContainsString('960w', $html, '960w must be rendered');
+        self::assertStringContainsString('1260w', $html, '1260w must be rendered');
     }
 }
