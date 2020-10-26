@@ -27,6 +27,9 @@ jobs:
       - name: composer --version
         run: composer --version
 
+      - name: identify --version
+        run: identify --version
+
       - name: (COMPOSER) Validate composer.json
         run: composer validate
 
