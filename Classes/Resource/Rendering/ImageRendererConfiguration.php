@@ -43,7 +43,8 @@ class ImageRendererConfiguration
     {
         if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['fluid_styled_responsive_images'])) {
             $extensionConfiguration = unserialize(
-                $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['fluid_styled_responsive_images']
+                $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['fluid_styled_responsive_images'],
+                ['allowed_classes' => false]
             );
 
             if (!is_array($extensionConfiguration)) {
