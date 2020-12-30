@@ -18,20 +18,14 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
  */
 class ImageRenderer implements FileRendererInterface
 {
-    /**
-     * @var TagBuilder
-     */
-    protected static $tagBuilder;
+    protected static ?TagBuilder $tagBuilder = null;
 
-    /**
-     * @var ImageRendererConfiguration
-     */
-    protected static $configuration;
+    protected static ?ImageRendererConfiguration $configuration = null;
 
     /**
      * @var array<string>
      */
-    protected $possibleMimeTypes = [
+    protected array $possibleMimeTypes = [
         'image/jpg',
         'image/jpeg',
         'image/png',
@@ -41,27 +35,21 @@ class ImageRenderer implements FileRendererInterface
     /**
      * @var array<string>
      */
-    protected $sizes = [];
+    protected array $sizes = [];
 
     /**
      * @var array<string>
      */
-    protected $srcset = [];
+    protected array $srcset = [];
 
     /**
      * @var array<string,string>
      */
-    protected $data = [];
+    protected array $data = [];
 
-    /**
-     * @var string
-     */
-    protected $defaultWidth;
+    protected ?string $defaultWidth = null;
 
-    /**
-     * @var string
-     */
-    protected $defaultHeight;
+    protected ?string $defaultHeight = null;
 
     /**
      * @return ImageRendererConfiguration

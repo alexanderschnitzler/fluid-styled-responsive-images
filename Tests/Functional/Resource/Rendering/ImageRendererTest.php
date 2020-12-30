@@ -38,10 +38,7 @@ class ImageRendererTest extends FunctionalTestCase
         'typo3conf/ext/fluid_styled_responsive_images'
     ];
 
-    /**
-     * @var File
-     */
-    protected $file;
+    protected ?File $file = null;
 
     public function setUp(): void
     {

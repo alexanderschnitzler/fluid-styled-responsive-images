@@ -16,22 +16,19 @@ class ImageRendererConfiguration
     /**
      * @var array<string,mixed>
      */
-    protected $extensionConfiguration = [];
+    protected array $extensionConfiguration = [];
 
-    /**
-     * @var TypoScriptService
-     */
-    protected $typoScriptService;
+    protected TypoScriptService $typoScriptService;
 
     /**
      * @var array<string,mixed>
      */
-    protected $settings = [];
+    protected array $settings = [];
 
     /**
      * @var array<string>
      */
-    protected $genericTagAttributes = [
+    protected array $genericTagAttributes = [
         'class',
         'dir',
         'id',

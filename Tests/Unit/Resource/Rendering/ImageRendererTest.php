@@ -34,7 +34,7 @@ class ImageRendererTest extends UnitTestCase
     /**
      * @var array<int,MockObject>
      */
-    protected $processedFiles = [];
+    protected array $processedFiles = [];
 
     public function setUp(): void
     {
