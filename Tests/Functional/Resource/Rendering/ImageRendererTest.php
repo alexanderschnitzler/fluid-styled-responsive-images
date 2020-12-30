@@ -8,22 +8,21 @@ use Schnitzler\FluidStyledResponsiveImages\Resource\Rendering\ImageRenderer;
 use Schnitzler\FluidStyledResponsiveImages\Resource\Rendering\ImageRendererConfiguration;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\FileRepository;
-use TYPO3\CMS\Core\Resource\Folder;
-use TYPO3\CMS\Core\Resource\Index\FileIndexRepository;
-use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -88,14 +87,19 @@ class ImageRendererTest extends FunctionalTestCase
         $GLOBALS['TYPO3_REQUEST'] = new ServerRequest(
             new Uri('')
         );
+        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+
+        /** @var Context $context */
+        $context = GeneralUtility::makeInstance(Context::class);
 
         $site = new Site('default', 1, []);
         /** @var TypoScriptFrontendController $TSFE */
         $TSFE = new TypoScriptFrontendController(
-            GeneralUtility::makeInstance(Context::class),
+            $context,
             $site,
             $site->getDefaultLanguage(),
-            new PageArguments(1, '0', [])
+            new PageArguments(1, '0', []),
+            new FrontendUserAuthentication()
         );
         $TSFE->setLogger(new NullLogger());
         $TSFE->sys_page = GeneralUtility::makeInstance(PageRepository::class);
