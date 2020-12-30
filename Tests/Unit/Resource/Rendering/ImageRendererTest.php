@@ -130,7 +130,6 @@ class ImageRendererTest extends UnitTestCase
     public function testWithSrcSetAndWithoutSourceCollection(): void
     {
         $this->file
-            ->expects(self::at(1))
             ->method('process')
             ->willReturn($this->processedFiles[0]);
 
@@ -161,19 +160,17 @@ class ImageRendererTest extends UnitTestCase
     public function testWithSrcSetAndSourceCollection(): void
     {
         $this->file
-            ->expects(self::at(1))
             ->method('process')
-            ->willReturn($this->processedFiles[1]);
-
-        $this->file
-            ->expects(self::at(2))
-            ->method('process')
-            ->willReturn($this->processedFiles[2]);
-
-        $this->file
-            ->expects(self::at(3))
-            ->method('process')
-            ->willReturn($this->processedFiles[0]);
+            ->withConsecutive(
+                [ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, ['width' => '360m', 'crop' => null]],
+                [ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, ['width' => '720m', 'crop' => null]],
+                [ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, ['width' => '1000m', 'crop' => null]],
+            )
+            ->willReturnOnConsecutiveCalls(
+                $this->processedFiles[1],
+                $this->processedFiles[2],
+                $this->processedFiles[0]
+            );
 
         $this->imageRendererConfiguration
             ->expects(self::once())
@@ -209,7 +206,6 @@ class ImageRendererTest extends UnitTestCase
     public function testWithDataAndWithoutSourceCollection(): void
     {
         $this->file
-            ->expects(self::at(1))
             ->method('process')
             ->willReturn($this->processedFiles[0]);
 
@@ -237,19 +233,17 @@ class ImageRendererTest extends UnitTestCase
     public function testWithDataAndSourceCollection(): void
     {
         $this->file
-            ->expects(self::at(1))
             ->method('process')
-            ->willReturn($this->processedFiles[1]);
-
-        $this->file
-            ->expects(self::at(2))
-            ->method('process')
-            ->willReturn($this->processedFiles[2]);
-
-        $this->file
-            ->expects(self::at(3))
-            ->method('process')
-            ->willReturn($this->processedFiles[0]);
+            ->withConsecutive(
+                [ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, ['width' => '360m', 'crop' => null]],
+                [ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, ['width' => '720m', 'crop' => null]],
+                [ProcessedFile::CONTEXT_IMAGECROPSCALEMASK, ['width' => '1000m', 'crop' => null]],
+            )
+            ->willReturnOnConsecutiveCalls(
+                $this->processedFiles[1],
+                $this->processedFiles[2],
+                $this->processedFiles[0]
+            );
 
         $this->imageRendererConfiguration
             ->expects(self::once())
