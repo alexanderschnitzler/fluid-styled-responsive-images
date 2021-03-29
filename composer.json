@@ -50,5 +50,8 @@
     },
     "config": {
         "sort-packages": true
+    },
+    "typo3/cms": {
+        "extension-key": "fluid_styled_responsive_images"
     }
 }
