@@ -12,7 +12,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'git@alexanderschnitzler.de',
     'constraints' => [
         'depends' => [
-            'php' => '8.0.0-8.1.99',
+            'php' => '8.0.0-8.2.99',
             'typo3' => '11.5.1-11.5.99',
             'fluid_styled_content' => '11.5.1-11.5.99',
         ],
