@@ -187,7 +187,7 @@ class ImageRenderer implements FileRendererInterface
                     $localProcessingConfiguration
                 );
 
-                $url = $configuration->getAbsRefPrefix() . $processedFile->getPublicUrl();
+                $url = $processedFile->getPublicUrl();
 
                 $this->data['data-' . ($sourceCollection['dataKey'] ?? '')] = $url;
                 $this->srcset[] = $url . rtrim(' ' . ($sourceCollection['srcset'] ?? ''));
